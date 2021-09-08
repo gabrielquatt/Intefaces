@@ -1,12 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Entrega Visualizacion</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Glory:ital,wght@0,300;1,300;1,700&family=Oswald:wght@300;600&display=swap" rel="stylesheet">
 </head>
+
 <body>
-    <h1>Entrega del trabajo</h1>
+
+    <div class="wrapper">
+        <div class="one">
+            <div class="menu__Top">
+                <div class="inner"><button class="btn_Top" type="button">Lapiz ✏️</button></div>
+                <div class="inner"><button class="btn_Top" type="button">Borrar🧹️</button></div>
+                <div class="inner"> <input type="color" class="button" value="#009900" id="color"></div>
+                <div class="inner"><button class="btn_Top" type="button">Tamaño</button></div>
+                <div class="inner"><button class="btn_Top" type="button">Cargar Img📁</button></div>
+                <div class="inner"><button class="btn_Top" type="button">Reset🔄</button></div>
+            </div>
+        </div>
+        <div class="two">
+            <div class="outer">
+                <div class="filters">
+                    <div><button class="button" type="button">Negativo 🔧</button></div>
+                    <hr>
+                    <div><button class="button" type="button">Binarizacion 🔧</button></div>
+                    <hr>
+                    <div><button class="button" type="button">Sepia 🔧</button></div>
+                    <hr>
+                    <div><button class="button" type="button">RayoPeronizador 🔧</button></div>
+                    <hr>
+                    <div><button class="button" type="button">Blur 🔧</button></div>
+                    <hr>
+                    <div><button class="button" type="button">Saturacion 🔧</button></div>
+                    <hr>
+                    <div>
+                        <button class="button" type="button">Brillo 🔧</button>
+                    </div>
+                    <hr>
+                </div>
+
+            </div>
+        </div>
+        <div class="three">
+            <canvas width="981" height="520"></canvas>
+        </div>
+        <div class="four">
+
+            <div class="outer">
+                <div class="inner"><button type="button" class="button">Delete ❌</button></div>
+                <div class="inner"><button type="button" class="button">Save ✔️</button></div>
+            </div>
+
+        </div>
+    </div>
+
 </body>
+
+
+
 </html>
