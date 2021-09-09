@@ -29,20 +29,20 @@ function loadImage(e) {
 
 function drawImage(img) {
   clearCanvas();
-  let percent = 1;
+  let prop = 1;
   if (img.width > width || img.height > height) {
-    percent = resizeImage(img);
+    prop = resizeImage(img);
   }
+  let newWidth = img.width * prop;
+  let newHeight = img.height * prop;
+  let posX = (width - newWidth) / 2;
+  let posY = (height - newHeight) / 2;
+  console.log(newHeight);
   ctx.imageSmoothingEnabled = true;
-  ctx.drawImage(img, 0, 0, img.width * percent, img.height * percent);
+  ctx.drawImage(img, posX, posY, newWidth, newHeight);
 }
 
 function resizeImage(img) {
-  // Para calcular la diferencia porcentual entre dos números,
-  // tendremos que restarle el valor antiguo al valor nuevo y
-  // dividir la cifra resultante entre el valor antiguo y
-  // multiplicarlo a continuación por 100.
-
   let percentW = 1;
   let percentH = 1;
   if (img.width > width) {
