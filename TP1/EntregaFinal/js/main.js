@@ -19,21 +19,24 @@ let TEMP_WIDTH = WIDTH;
 let TEMP_HEIGHT = HEIGHT;
 
 /** Input (oculto) para seleccionar imagen del disco */
-let inputFile = document.getElementById("file");
+let file = document.getElementById("file");
 
 /** Boton visible */
-document.getElementById("btn").addEventListener("click", () => {
-  inputFile.click();
-});
+document
+  .getElementById("btn")
+  .addEventListener("click", () => file.click());
 
 /** Evento que dispara carga de la imagen del disco */
-inputFile.addEventListener("change", (e) => loadImage(e));
+file.addEventListener("change", (e) => loadImage(e));
 
 /** Evento que dispara la descarga de la imagen */
 document.getElementById("btnSave").addEventListener("click", saveImage);
 
 /** Restaurar imagen original */
 document.getElementById("reset").addEventListener("click", drawImage);
+
+/** Borra imagen */
+document.getElementById("delete").addEventListener("click", deleteImage);
 
 /**
  * Usuario selecciona una imagen de su disco
@@ -97,6 +100,14 @@ function resetCanvas() {
   canvas.width = WIDTH;
   canvas.height = HEIGHT;
   ctx.clearRect(0, 0, WIDTH, HEIGHT);
+}
+
+/**
+ * Borra la imagen cargada
+ */
+function deleteImage(){
+  resetCanvas();
+  IMG.src = "";
 }
 
 function getCopy() {
