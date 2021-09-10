@@ -5,6 +5,7 @@ let ctx = canvas.getContext("2d");
 const width = canvas.width;
 const height = canvas.height;
 
+document.getElementById("btnSave").addEventListener("click", saveImage);
 let inputFile = document.getElementById("file");
 
 document.getElementById("btn").addEventListener("click", () => {
@@ -35,11 +36,10 @@ function drawImage(img) {
   }
   let newWidth = img.width * prop;
   let newHeight = img.height * prop;
-  let posX = (width - newWidth) / 2;
-  let posY = (height - newHeight) / 2;
-  console.log(newHeight);
+  canvas.width = newWidth;
+  canvas.height = newHeight;
   ctx.imageSmoothingEnabled = true;
-  ctx.drawImage(img, posX, posY, newWidth, newHeight);
+  ctx.drawImage(img, 0, 0, newWidth, newHeight);
 }
 
 function resizeImage(img) {
@@ -56,8 +56,11 @@ function resizeImage(img) {
 }
 
 function clearCanvas() {
+  canvas.width = width;
+  canvas.height = height;
   ctx.clearRect(0, 0, width, height);
 }
+
 
 //----------------------------------------------------------------------------------------------//
 // imageData(): se usa para crear el objeto.
@@ -197,5 +200,15 @@ function white_or_dark(pixel) {
   } else if ((pixel >= 0) && (pixel <= 127)) {
       return 0;
   }
+}
+
+function saveImage() {
+  // save image as png
+  let link = document.createElement("a");
+  link.download = "canvas.png";
+  link.href = canvas
+    .toDataURL("image/png")
+    .replace("image/png", "image/octet-stream");
+  link.click();
 }
 
