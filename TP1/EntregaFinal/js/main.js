@@ -8,9 +8,6 @@ let ctx = canvas.getContext("2d");
 const WIDTH = canvas.width;
 const HEIGHT = canvas.height;
 
-/* Imagen */
-let IMG = new Image();
-
 /** Proporcion de la imagen */
 let PROP = 1;
 
@@ -19,15 +16,46 @@ let TEMP_WIDTH = WIDTH;
 let TEMP_HEIGHT = HEIGHT;
 
 /** Input (oculto) para seleccionar imagen del disco */
-let file = document.getElementById("file");
+let input = document.getElementById("file");
+
+/* Imagen */
+let IMG = new Image();
+
+/** Elemento seccionado*/
+let lapiz = new Lapiz();
+
+/** Color del lapiz */
+let color = `rgba(${0},${0},${0},${255})`;
+
+/** Tamaño del pincel medido en pixeles */
+let pincel = 15;
+
+let mouseDown = false;
+let mouseUp = true;
+
+/** Seleccion del lapiz */
+document.getElementById("lapiz").addEventListener("click", () => {
+  lapiz = !lapiz;
+  borrador = false;
+});
+
+
+
+// let borrador = false;
+
+// /** Seleccion del borrador */
+// document.getElementById("borrador").addEventListener("click", () => {
+//   borrador = !borrador;
+//   lapiz = false;
+// });
+
+// TODO seleccion del color
 
 /** Boton visible */
-document
-  .getElementById("btn")
-  .addEventListener("click", () => file.click());
+document.getElementById("btn").addEventListener("click", () => input.click());
 
 /** Evento que dispara carga de la imagen del disco */
-file.addEventListener("change", (e) => loadImage(e));
+input.addEventListener("change", (e) => loadImage(e));
 
 /** Evento que dispara la descarga de la imagen */
 document.getElementById("btnSave").addEventListener("click", saveImage);
@@ -35,7 +63,7 @@ document.getElementById("btnSave").addEventListener("click", saveImage);
 /** Restaurar imagen original */
 document.getElementById("reset").addEventListener("click", drawImage);
 
-/** Borra imagen */
+/** Borrar imagen */
 document.getElementById("delete").addEventListener("click", deleteImage);
 
 /**
@@ -50,7 +78,7 @@ function loadImage(e) {
     let fileReader = new FileReader();
 
     // Define 'src' de imagen con la ruta del archivo seleccionado
-    fileReader.onload = (e) => (IMG.src = e.target.result);
+    fileReader.onload = (e) => (sIMG.rc = e.target.result);
     fileReader.readAsDataURL(file);
 
     // Dibujar imagen
@@ -63,17 +91,23 @@ function loadImage(e) {
  */
 function drawImage() {
   resetCanvas();
+
+  // Define las proporciones de la imagen y del canvas
   setSize();
   ctx.imageSmoothingEnabled = true;
   ctx.drawImage(IMG, 0, 0, TEMP_WIDTH, TEMP_HEIGHT);
 }
 
 /**
- * Definicion de proporciones de la imagen dependiendo su tamaño
+ * Definicion de proporciones de la imagen
  */
 function setSize() {
+  // evaluar proporcion
   PROP = IMG.width > WIDTH || IMG.height > HEIGHT ? aspectRatio() : 1;
 
+  // si la proporcion es 1, la imagen mantendra su tamaño
+  // si la porporcion es menor, (Ej: 0.75) el tamaño de la imagen
+  // sera solo el 75% de la original
   TEMP_WIDTH = IMG.width * PROP;
   TEMP_HEIGHT = IMG.height * PROP;
 
@@ -85,7 +119,11 @@ function setSize() {
 /**
  * Si la imagen es mayor al tamaño maximo del canvas
  * Esta funcion determina que porcentaje de la imagen entra en el canvas
+ *
+ * Ej: si retorna 0.75, solo el 75% de la imagen entra en el canvas
+ *
  * @param { Image } img
+ * @returns { Number } entre 0 y 1
  */
 function aspectRatio() {
   let w = IMG.width > WIDTH ? (WIDTH - IMG.width) / IMG.width : 1;
@@ -105,11 +143,14 @@ function resetCanvas() {
 /**
  * Borra la imagen cargada
  */
-function deleteImage(){
+function deleteImage() {
   resetCanvas();
   IMG.src = "";
 }
 
+/**
+ * @returns objeto que contiene los datos de la imagen para el rectángulo dado del canvas
+ */
 function getCopy() {
   ctx.drawImage(IMG, 0, 0, TEMP_WIDTH, TEMP_HEIGHT);
   return ctx.getImageData(0, 0, TEMP_WIDTH, TEMP_HEIGHT);
@@ -205,8 +246,8 @@ function setPixel(imageData, x, y, r, g, b, a) {
 }
 
 /**
- * @returns promedio de colores de un pixel dado en un arreglo
- * @param { Array } arr
+ * @returns promedio de colores de un pixel (dado en un arreglo)
+ * @param { Array } arr pixel
  */
 function prom(arr) {
   return Math.floor((arr[0] + arr[1] + arr[2]) / 3);
