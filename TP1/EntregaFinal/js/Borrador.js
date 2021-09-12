@@ -1,4 +1,4 @@
-class Borrador extends Figure {
+class Borrador extends Pincel {
   constructor(x, y, fill, ctx, width, height) {
     super(x, y, fill, ctx);
     this.width = width;
@@ -7,15 +7,15 @@ class Borrador extends Figure {
 
   draw() {
     super.draw();
-    this.context.fillRect(this.posX, this.posY, this.width, this.height);
+    this.ctx.fillRect(this.posX, this.posY, this.width, this.height);
   }
 
-  onCanvas(x, y) {
-    return !(
-      x < this.posX ||
-      x > this.posX + this.width ||
-      y < this.posY ||
-      y > this.posY + this.height
-    );
-  }
+  // onCanvas(x, y) {
+  //   return !(
+  //     x < this.posX ||
+  //     x > this.posX + this.width ||
+  //     y < this.posY ||
+  //     y > this.posY + this.height
+  //   );
+  // }
 }

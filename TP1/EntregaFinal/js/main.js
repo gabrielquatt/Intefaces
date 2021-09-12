@@ -1,8 +1,11 @@
+"use strict";
+
 /** @type { HTMLcanvasElement} */
 let canvas = document.getElementById("canvas");
 
 /** Contexto */
 let ctx = canvas.getContext("2d");
+console.log(ctx);
 
 /** Tamaño maximo de canvas */
 const WIDTH = canvas.width;
@@ -21,35 +24,32 @@ let input = document.getElementById("file");
 /* Imagen */
 let IMG = new Image();
 
-/** Elemento seccionado*/
-let lapiz = new Lapiz();
-
-/** Color del lapiz */
-let color = `rgba(${0},${0},${0},${255})`;
-
 /** Tamaño del pincel medido en pixeles */
-let pincel = 15;
+let tam = 5;
 
+// /** Color del lapiz */
+let color = `rgba(${0},${0},${0},${255})`;
 let mouseDown = false;
-let mouseUp = true;
 
-/** Seleccion del lapiz */
-document.getElementById("lapiz").addEventListener("click", () => {
-  lapiz = !lapiz;
-  borrador = false;
+let lapiz = new Lapiz(0, 0, color, tam / 2, ctx);
+
+canvas.addEventListener("mousedown", () => {
+  mouseDown = true;
 });
 
+canvas.addEventListener("mouseup", () => {
+  mouseDown = false;
+});
 
+canvas.addEventListener("mousemove", (e) => {
+  if (mouseDown) {
+    lapiz.setPosition(e.layerX, e.layerY);
+    lapiz.draw();
+  }
+});
 
-// let borrador = false;
-
-// /** Seleccion del borrador */
-// document.getElementById("borrador").addEventListener("click", () => {
-//   borrador = !borrador;
-//   lapiz = false;
-// });
-
-// TODO seleccion del color
+// /** Seleccion del lapiz */
+// document.getElementById("lapiz").addEventListener("click", () => {});
 
 /** Boton visible */
 document.getElementById("btn").addEventListener("click", () => input.click());
@@ -78,7 +78,7 @@ function loadImage(e) {
     let fileReader = new FileReader();
 
     // Define 'src' de imagen con la ruta del archivo seleccionado
-    fileReader.onload = (e) => (sIMG.rc = e.target.result);
+    fileReader.onload = (e) => (IMG.src = e.target.result);
     fileReader.readAsDataURL(file);
 
     // Dibujar imagen

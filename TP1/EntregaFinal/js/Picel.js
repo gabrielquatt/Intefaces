@@ -1,13 +1,13 @@
-class Figure {
+class Pincel {
   constructor(x, y, fill, ctx) {
     this.posX = x;
     this.posY = y;
     this.fill = fill;
-    this.context = ctx;
+    this.ctx = ctx;
   }
 
   draw() {
-    this.context.fillStyle = this.fill;
+    // this.ctx.fillStyle = this.fill;
   }
 
   setPosition(x, y) {
@@ -26,5 +26,5 @@ class Figure {
     this.fill = fill;
   }
 
-  onCanvas(){}
+  // onCanvas(){}
 }
