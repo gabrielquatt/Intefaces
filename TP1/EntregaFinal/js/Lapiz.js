@@ -2,7 +2,6 @@ class Lapiz extends Pincel {
   constructor(x, y, fill, radius, ctx) {
     super(x, y, fill, ctx);
     this.radius = radius;
-    console.log(this.fill);
   }
 
   draw() {

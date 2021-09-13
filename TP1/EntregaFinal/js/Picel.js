@@ -7,7 +7,7 @@ class Pincel {
   }
 
   draw() {
-    // this.ctx.fillStyle = this.fill;
+    this.ctx.fillStyle = this.fill;
   }
 
   setPosition(x, y) {

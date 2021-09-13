@@ -5,7 +5,6 @@ let canvas = document.getElementById("canvas");
 
 /** Contexto */
 let ctx = canvas.getContext("2d");
-console.log(ctx);
 
 /** Tamaño maximo de canvas */
 const WIDTH = canvas.width;
@@ -27,11 +26,35 @@ let IMG = new Image();
 /** Tamaño del pincel medido en pixeles */
 let tam = 5;
 
-// /** Color del lapiz */
-let color = `rgba(${0},${0},${0},${255})`;
+/** Estado del mouse */
 let mouseDown = false;
 
-let lapiz = new Lapiz(0, 0, color, tam / 2, ctx);
+/** Color del lapiz por defecto en negro*/
+let color = `rgba(${0},${0},${0},${255})`;
+
+/** El pincel puede ser lapiz o borrador */
+let pincel;
+
+/** Seleccion del lapiz */
+document.getElementById("lapiz").addEventListener("click", (e) => {
+  let src = "img/pluma.ico";
+  e.target.style.cursor = `url('${src}'), auto`;
+
+  if (pincel instanceof Lapiz) {
+    pincel = null;
+  } else {
+    pincel = new Lapiz(0, 0, color, tam / 2, ctx);
+  }
+});
+
+/** Seleccion del lapiz */
+document.getElementById("borrador").addEventListener("click", () => {
+  if (pincel instanceof Borrador) {
+    pincel = null;
+  } else {
+    pincel = new Borrador(0, 0, color, tam / 2, ctx);
+  }
+});
 
 canvas.addEventListener("mousedown", () => {
   mouseDown = true;
@@ -42,14 +65,13 @@ canvas.addEventListener("mouseup", () => {
 });
 
 canvas.addEventListener("mousemove", (e) => {
-  if (mouseDown) {
-    lapiz.setPosition(e.layerX, e.layerY);
-    lapiz.draw();
+  if (pincel) {
+    if (mouseDown) {
+      pincel.setPosition(e.layerX, e.layerY);
+      pincel.draw();
+    }
   }
 });
-
-// /** Seleccion del lapiz */
-// document.getElementById("lapiz").addEventListener("click", () => {});
 
 /** Boton visible */
 document.getElementById("btn").addEventListener("click", () => input.click());

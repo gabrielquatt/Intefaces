@@ -1,6 +1,6 @@
 class Borrador extends Pincel {
   constructor(x, y, fill, ctx, width, height) {
-    super(x, y, fill, ctx);
+    super(x, y, "white", ctx);
     this.width = width;
     this.height = height;
   }
