@@ -4,11 +4,12 @@ class Lapiz extends Pincel {
     this.radius = radius;
   }
 
-  draw() {
-    super.draw();
+  draw(e) {
+    super.draw(e);
     this.ctx.beginPath();
-    this.ctx.arc(this.posX, this.posY, this.radius, 0, 2 * Math.PI);
-    this.ctx.fill();
+    ctx.moveTo(this.posX, this.posY);
+    ctx.lineTo(e.layerX, e.layerY);
+    ctx.stroke();
     this.ctx.closePath();
   }
 

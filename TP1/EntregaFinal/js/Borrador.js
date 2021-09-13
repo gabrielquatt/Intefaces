@@ -3,6 +3,8 @@ class Borrador extends Pincel {
     super(x, y, "white", ctx);
     this.width = width;
     this.height = height;
+
+
   }
 
   draw() {

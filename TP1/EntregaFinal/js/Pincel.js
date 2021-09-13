@@ -6,7 +6,7 @@ class Pincel {
     this.ctx = ctx;
   }
 
-  draw() {
+  draw(e) {
     this.ctx.fillStyle = this.fill;
   }
 

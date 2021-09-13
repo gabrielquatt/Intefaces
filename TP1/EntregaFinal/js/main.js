@@ -47,17 +47,20 @@ document.getElementById("lapiz").addEventListener("click", (e) => {
   }
 });
 
-/** Seleccion del lapiz */
+/** Seleccion del borrador */
 document.getElementById("borrador").addEventListener("click", () => {
   if (pincel instanceof Borrador) {
     pincel = null;
   } else {
-    pincel = new Borrador(0, 0, color, tam / 2, ctx);
+    pincel = new Borrador(0, 0, color, ctx, tam , tam );
   }
 });
 
-canvas.addEventListener("mousedown", () => {
+canvas.addEventListener("mousedown", (e) => {
   mouseDown = true;
+  if(pincel){
+    pincel.setPosition(e.layerX,e.layerY);
+  }
 });
 
 canvas.addEventListener("mouseup", () => {
@@ -67,8 +70,8 @@ canvas.addEventListener("mouseup", () => {
 canvas.addEventListener("mousemove", (e) => {
   if (pincel) {
     if (mouseDown) {
+      pincel.draw(e);
       pincel.setPosition(e.layerX, e.layerY);
-      pincel.draw();
     }
   }
 });
