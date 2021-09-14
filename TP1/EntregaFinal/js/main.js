@@ -94,7 +94,7 @@ let drop_down = document.getElementById("dropDown");
  * Desplegar/ocultar input para seleccionar tamaño del trazo
  */
 document.getElementById("btn_stroke").addEventListener("click", () => {
-  drop_down.classList.toggle("show");
+  drop_down.classList.toggle("hide");
 });
 
 /**

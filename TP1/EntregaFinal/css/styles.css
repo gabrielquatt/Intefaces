@@ -73,7 +73,6 @@ input[type="file"] {
 .hide {
   display: none;
 }
-.show{
+.dropDown{
   position: absolute;
-  display: block !important;
 }
