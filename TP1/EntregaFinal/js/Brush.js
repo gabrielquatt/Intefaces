@@ -2,21 +2,21 @@ class Brush {
   constructor(x, y, stroke, ctx, width, type) {
     this.posX = x;
     this.posY = y;
-    this.stroke = stroke;
     this.ctx = ctx;
-    this.width = width;
+    this.ctx.lineWidth = width;
+    this.ctx.strokeStyle = stroke;
+    this.ctx.lineCap = "round";
     this.type = type;
   }
 
-  draw(e) {
-    this.ctx.strokeStyle = this.stroke;
-    this.ctx.lineWidth = this.width; 
+  draw(x, y) {
     this.ctx.beginPath();
-    ctx.moveTo(this.posX, this.posY);
-    ctx.lineTo(e.layerX, e.layerY);
-    ctx.stroke();
-    this.ctx.closePath();
+    this.ctx.moveTo(this.posX, this.posY);
+    this.ctx.lineTo(x, y);
+    this.ctx.stroke();
+    this.setPosition(x, y);
   }
+
 
   setPosition(x, y) {
     this.posX = x;
@@ -30,17 +30,16 @@ class Brush {
     };
   }
 
-  setFill(stroke) {
-    this.stroke = stroke;
+  setStroke(stroke) {
+    this.ctx.strokeStyle = stroke;
   }
 
-  setLenght(width) {
-    this.width = width;
+  setLineWidth(width) {
+    this.ctx.lineWidth = width;
   }
 
   typeOf(t) {
     return t === this.type;
   }
 
-  // onCanvas(){}
 }

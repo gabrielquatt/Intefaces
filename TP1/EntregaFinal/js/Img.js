@@ -40,8 +40,8 @@ class Img {
    * Muestra la imagen en el canvas
    */
   drawImage() {
-    this.resetCanvas();
     if (this.img.src) {
+      this.resetCanvas();
       this.setSize();
       ctx.imageSmoothingEnabled = true;
       ctx.drawImage(this.img, 0, 0, this.tmp_width, this.tmp_height);
@@ -136,7 +136,7 @@ class Img {
   /**
    * Imagen representada por dos colores (blanco y negro)
    */
-   binarization() {
+  binarization() {
     let c = this.getCopy();
     for (let x = 0; x < this.tmp_height; x++) {
       for (let y = 0; y < this.tmp_width; y++) {
@@ -155,7 +155,7 @@ class Img {
   /**
    * Imagen donde las luces tienen tonos oscuros y las sombras tonos claros
    */
-   negative() {
+  negative() {
     let c = this.getCopy();
     for (let x = 0; x < this.tmp_height; x++) {
       for (let y = 0; y < this.tmp_width; y++) {

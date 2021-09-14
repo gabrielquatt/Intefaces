@@ -19,39 +19,52 @@
       <div class="one">
         <div class="menu__Top">
           <div class="inner">
-            <button id="brush" class="btn_Top" type="button">Lapiz ✏️</button>
+            <button id="brush" class="btn_Top" type="button">✏️</button>
           </div>
-          <div class="inner">
-            <button id="draft" class="btn_Top" type="button">Borrar🧹️</button>
-          </div>
+         
           <div class="inner">
             <input type="color" class="button" value="#009900" id="color" />
           </div>
           <div class="inner">
-            <button class="btn_Top" type="button">Tamaño</button>
+            <button id="btn_stroke" class="button" type="button">Trazo</button>
+            <div id="dropDown" class="hide">
+              <input id="stroke" type="range" min="3" max="50" value="10"/>
+            </div>
           </div>
           <div class="inner">
-            <button id="btn" class="btn_Top" type="button">Cargar Img📁</button>
+            <button id="draft" class="btn_Top" type="button">🧹️</button>
+          </div>
+          <div class="inner">
+            <button id="btn" class="btn_Top" type="button">📁</button>
             <input type="file" id="file" name="file" />
           </div>
           <div class="inner">
-            <button id="reset" class="btn_Top" type="button">Reset🔄</button>
+            <button id="reset" class="btn_Top" type="button">🔄</button>
           </div>
         </div>
       </div>
-    
+
       <div class="two">
         <div class="outer">
           <div class="filters">
-            <div><button id="btn_negative" class="button" type="button">Negativo 🔧</button></div>
-            <hr />
             <div>
-              <button id="btn_binary" class="button" type="button">Binarizacion 🔧</button>
+              <button id="btn_negative" class="button" type="button">
+                Negativo 🔧
+              </button>
             </div>
             <hr />
-            <div><button id="btn_sepia" class="button" type="button">Sepia 🔧</button></div>
-           
-           
+            <div>
+              <button id="btn_binary" class="button" type="button">
+                Binarizacion 🔧
+              </button>
+            </div>
+            <hr />
+            <div>
+              <button id="btn_sepia" class="button" type="button">
+                Sepia 🔧
+              </button>
+            </div>
+
             <hr />
             <div><button class="button" type="button">Blur 🔧</button></div>
             <hr />
@@ -70,7 +83,6 @@
         <canvas id="canvas" width="980" height="520"></canvas>
       </div>
 
-
       <div class="four">
         <div class="outer">
           <div class="inner">
@@ -82,7 +94,6 @@
         </div>
       </div>
     </div>
-
 
     <script src="js/Brush.js"></script>
     <script src="js/Img.js"></script>

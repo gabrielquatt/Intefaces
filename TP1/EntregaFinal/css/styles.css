@@ -70,4 +70,10 @@ input[type="file"] {
 .filters {
   padding: 40px;
 }
-
+.hide {
+  display: none;
+}
+.show{
+  position: absolute;
+  display: block !important;
+}

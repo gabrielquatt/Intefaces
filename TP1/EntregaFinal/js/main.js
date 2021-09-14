@@ -12,14 +12,19 @@ let image = new Img(canvas.width, canvas.height, ctx, canvas);
 /** El pincel puede ser lapiz o borrador */
 let brush = null;
 
-/** Tamaño del pincel medido en pixeles */
-let tam = 5;
-
 /** Estado del mouse */
 let mouseDown = false;
 
 /** Color del lapiz por defecto en negro*/
 let color = `rgba(${0},${0},${0},${255})`;
+
+/** Input para cambiar tamaño del trazo */
+let input_stroke = document.getElementById("stroke");
+
+/** Cambiar tamaño del pincel */
+input_stroke.addEventListener("change", () => {
+  if (brush) brush.setLineWidth(input_stroke.value);
+});
 
 /** Seleccion del lapiz */
 document.getElementById("brush").addEventListener("click", () => {
@@ -34,21 +39,21 @@ document.getElementById("draft").addEventListener("click", () => {
 /** Acciones al seleccionar lapiz o borrador */
 function setBrush(type) {
   if (brush == null) {
-    newPincel(type);
+    newBrush(type);
   } else {
     if (brush.typeOf(type)) {
       brush = null;
     } else {
-      newPincel(type);
+      newBrush(type);
     }
   }
 }
 
 /** Crea nueva instancia del pincel */
-function newPincel(type) {
-  brush = new Brush(0, 0, color, ctx, tam, type);
+function newBrush(type) {
+  brush = new Brush(0, 0, color, ctx, input_stroke.value, type);
   if (type == "draft") {
-    brush.setFill("white");
+    brush.setStroke("white");
   }
 }
 
@@ -59,9 +64,7 @@ function newPincel(type) {
  */
 canvas.addEventListener("mousedown", (e) => {
   mouseDown = true;
-  if (brush) {
-    brush.setPosition(e.layerX, e.layerY);
-  }
+  if (brush) brush.setPosition(e.layerX, e.layerY);
 });
 
 canvas.addEventListener("mouseup", () => {
@@ -71,8 +74,7 @@ canvas.addEventListener("mouseup", () => {
 canvas.addEventListener("mousemove", (e) => {
   if (brush) {
     if (mouseDown) {
-      brush.draw(e);
-      brush.setPosition(e.layerX, e.layerY);
+      brush.draw(e.layerX, e.layerY);
     }
   }
 });
@@ -84,19 +86,33 @@ canvas.addEventListener("mousemove", (e) => {
  */
 
 /**
+ * Div donde se encuentra el input type range
+ */
+let drop_down = document.getElementById("dropDown");
+
+/**
+ * Desplegar/ocultar input para seleccionar tamaño del trazo
+ */
+document.getElementById("btn_stroke").addEventListener("click", () => {
+  drop_down.classList.toggle("show");
+});
+
+/**
  * Input (oculto) para seleccionar imagen del disco
  */
-let input = document.getElementById("file");
+let input_file = document.getElementById("file");
 
 /**
  * Boton visible que acciona el input oculto
  */
-document.getElementById("btn").addEventListener("click", () => input.click());
+document
+  .getElementById("btn")
+  .addEventListener("click", () => input_file.click());
 
 /**
  * Evento que dispara la carga de la imagen del disco
  */
-input.addEventListener("change", (e) => image.loadImage(e));
+input_file.addEventListener("change", (e) => image.loadImage(e));
 
 /**
  * Evento que dispara la descarga de la imagen
