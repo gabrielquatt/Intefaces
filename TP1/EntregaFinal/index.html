@@ -1,95 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Entrega Visualizacion</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Glory:ital,wght@0,300;1,300;1,700&family=Oswald:wght@300;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <title>Entrega Visualizacion</title>
-  <link rel="stylesheet" href="css/styles.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Glory:ital,wght@0,300;1,300;1,700&family=Oswald:wght@300;600&display=swap"
-    rel="stylesheet" />
-</head>
-
-<body>
-  <div class="wrapper">
-    <div class="one">
-      <div class="menu__Top">
-        <div class="inner">
-          <button id="lapiz" class="btn_Top" type="button">Lapiz ✏️</button>
-        </div>
-        <div class="inner">
-          <button id="borrador" class="btn_Top" type="button">Borrar🧹️</button>
-        </div>
-        <div class="inner">
-          <input type="color" class="button" value="#009900" id="color" />
-        </div>
-        <div class="inner">
-          <button class="btn_Top" type="button">Tamaño</button>
-        </div>
-        <div class="inner">
-          <button id="btn" class="btn_Top" type="button">Cargar Img📁</button>
-          <input type="file" id="file" name="file" />
-        </div>
-        <div class="inner">
-          <button id="reset" class="btn_Top" type="button">Reset🔄</button>
-        </div>
-      </div>
-    </div>
-    <div class="two">
-      <div class="outer">
-        <div class="filters">
-          <div><button id="btn_negativo" class="button" type="button">Negativo 🔧</button></div>
-          <hr />
-          <div>
-            <button id="btn_binary" class="button" type="button">Binarizacion 🔧</button>
+  <body>
+    <div class="wrapper">
+      <div class="one">
+        <div class="menu__Top">
+          <div class="inner">
+            <button id="brush" class="btn_Top" type="button">✏️</button>
           </div>
-          <hr />
-          <div><button id="btn_sepia" class="button" type="button">Sepia 🔧</button></div>
 
-
-          <hr />
-          <div><button class="button" type="button">Blur 🔧</button></div>
-          <hr />
-          <div>
-            <button class="button" type="button">Saturacion 🔧</button>
+          <div class="inner">
+            <input type="color" class="button" value="#009900" id="color" />
           </div>
-          <hr />
-          <div>
-            <button id="btn_brillo" class="button" type="button">Brillo 🔧</button>
+          <div class="inner">
+            <button id="btn_stroke" class="button" type="button">Trazo</button>
+            <div id="dropDown" class="dropDown hide">
+              <input id="stroke" type="range" min="3" max="50" value="10" />
+            </div>
           </div>
-          <hr />
+          <div class="inner">
+            <button id="draft" class="btn_Top" type="button">🧹️</button>
+          </div>
+          <div class="inner">
+            <button id="btn" class="btn_Top" type="button">📁</button>
+            <input type="file" id="file" name="file" />
+          </div>
+          <div class="inner">
+            <button id="reset" class="btn_Top" type="button">🔄</button>
+          </div>
+      
+        </div>
+      </div>
+
+      <div class="three">
+        <div class="container">
+          <div class="container_canvas">
+            <canvas id="canvas" width="954" height="490"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="two">
+        <div class="outer">
+          <div class="filters">
+            <div>
+              <button id="btn_negative" class="button" type="button">
+                Negativo 🔧
+              </button>
+            </div>
+            <hr />
+            <div>
+              <button id="btn_binary" class="button" type="button">
+                Binarizacion 🔧
+              </button>
+            </div>
+            <hr />
+            <div>
+              <button id="btn_sepia" class="button" type="button">
+                Sepia 🔧
+              </button>
+            </div>
+            <hr />
+            <div><button class="button" type="button">Blur 🔧</button></div>
+            <hr />
+            <div>
+              <button class="button" type="button">Saturacion 🔧</button>
+            </div>
+            <hr />
+            <div>
+              <button class="button" type="button">Brillo 🔧</button>
+            </div>
+            <hr />
+          </div>
+        </div>
+      </div>
+
+      <div class="four">
+        <div class="outer">
+          <div class="inner">
+            <button id="delete" type="button" class="button">Delete ❌</button>
+          </div>
+          <div class="inner">
+            <button id="btn_save" type="button" class="button">Save ✔️</button>
+          </div>
         </div>
       </div>
     </div>
-    <div class="three">
-      <div class="container">
-        <div class="container_canvas">
-          <canvas id="canvas" width="954" height="490"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <div class="four">
-      <div class="outer">
-        <div class="inner">
-          <button id="delete" type="button" class="button">Delete ❌</button>
-        </div>
-        <div class="inner">
-          <button id="btnSave" type="button" class="button">Save ✔️</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-  <script src="js/Pincel.js"></script>
-  <script src="js/Lapiz.js"></script>
-  <script src="js/Borrador.js"></script>
-  <script src="js/main.js"></script>
-</body>
-
+    <script src="js/Brush.js"></script>
+    <script src="js/Img.js"></script>
+    <script src="js/main.js"></script>
+  </body>
 </html>
