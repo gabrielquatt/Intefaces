@@ -25,7 +25,6 @@ body {
   grid-row: 1 / 4;
 }
 .three {
-  background-color: white;
   grid-column: 1/4;
   grid-row: 2 / 4;
 }
@@ -71,3 +70,10 @@ input[type="file"] {
   padding: 40px;
 }
 
+.container_canvas{
+  background-color: white;
+}
+.container{
+  background-color: none;
+  padding: 15px;
+}
