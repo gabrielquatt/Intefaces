@@ -14,19 +14,8 @@ let brush = null;
 /** Estado del mouse */
 let mouseDown = false;
 
-/** Color del lapiz por defecto en negro*/
-let color = `rgba(${0},${0},${0},${255})`;
-
-/** Input para cambiar tamaño del trazo */
-let input_stroke = document.getElementById("stroke");
-
-/** Cambiar tamaño del pincel */
-input_stroke.addEventListener("change", () => {
-  if (brush) brush.setLineWidth(input_stroke.value);
-});
-
 /** Seleccion del lapiz */
-document.getElementById("brush").addEventListener("click", () => {
+document.getElementById("brush").addEventListener("click", (e) => {
   setBrush("brush");
 });
 
@@ -35,39 +24,66 @@ document.getElementById("draft").addEventListener("click", () => {
   setBrush("draft");
 });
 
-/** Acciones al seleccionar lapiz o borrador */
+/**
+ ****************************************************************************
+ *                 Acciones al seleccionar lapiz o borrador
+ *****************************************************************************
+ */
+
+/**
+ * Crea nueva instancia del pincel
+ */
 function setBrush(type) {
-  if (brush == null) {
-    newBrush(type);
-  } else {
-    if (brush.typeOf(type)) {
+  if (type == "draft") {
+    if (brush && brush instanceof Eraser) {
       brush = null;
-      document.getElementById("canvas").style.cursor = `auto`;
     } else {
-      newBrush(type);
+      brush = new Eraser(0, 0, ctx, input_stroke.value);
     }
   }
-}
-
-/** Crea nueva instancia del pincel */
-function newBrush(type) {
-  brush = new Brush(0, 0, color, ctx, input_stroke.value, type);
-  if (type == "draft") {
-    brush.setStroke("white");
-    document.getElementById(
-      "canvas"
-    ).style.cursor = `url('img/goma.cur'), auto`;
-  } else {
-    document.getElementById(
-      "canvas"
-    ).style.cursor = `url('img/pencil-cursor.cur'), auto`;
+  if (type == "brush") {
+    if (brush && brush instanceof Pencil) {
+      brush = null;
+    } else {
+      brush = new Pencil(0, 0, color.value, ctx, input_stroke.value);
+    }
   }
+  if (!brush) document.body.style.cursor = `auto`;
 }
 
 /**
- * ***********************************
- * Eventos del canvas
- * ***********************************
+ **********************************************************************
+ *                    Acciones al cambiar color y grosor
+ **********************************************************************
+ */
+
+/**
+ * Cambiar color
+ */
+let color = document.getElementById("color");
+color.addEventListener("change", () => {
+  if (brush) brush.setStroke(color.value);
+});
+
+/**
+ * Cambiar tamaño del trazo
+ */
+let input_stroke = document.getElementById("stroke");
+input_stroke.addEventListener("change", () => {
+  if (brush) brush.setLineWidth(input_stroke.value);
+});
+
+/**
+ * Desplegar/ocultar input para seleccionar tamaño del trazo
+ */
+document.getElementById("btn_stroke").addEventListener("click", () => {
+  document.getElementById("dropDown").classList.toggle("hide");
+});
+
+/**
+ * ***********************************************************************
+ *                          Eventos del canvas
+ * ***********************************************************************
  */
 canvas.addEventListener("mousedown", (e) => {
   mouseDown = true;
@@ -87,22 +103,10 @@ canvas.addEventListener("mousemove", (e) => {
 });
 
 /**
- * ***********************************
- * Eventos de los botones
- * ***********************************
+ * **************************************************************************
+ *                    Seleccionar/guardar imagen y aplicar filtros
+ * **************************************************************************
  */
-
-/**
- * Div donde se encuentra el input type range
- */
-let drop_down = document.getElementById("dropDown");
-
-/**
- * Desplegar/ocultar input para seleccionar tamaño del trazo
- */
-document.getElementById("btn_stroke").addEventListener("click", () => {
-  drop_down.classList.toggle("hide");
-});
 
 /**
  * Input (oculto) para seleccionar imagen del disco
@@ -113,7 +117,7 @@ let input_file = document.getElementById("file");
  * Boton visible que acciona el input oculto
  */
 document
-  .getElementById("btn")
+  .getElementById("btn_file")
   .addEventListener("click", () => input_file.click());
 
 /**
@@ -132,7 +136,7 @@ document
  * Restaurar imagen original
  */
 document
-  .getElementById("reset")
+  .getElementById("btn_reset")
   .addEventListener("click", () => image.drawImage());
 
 /**

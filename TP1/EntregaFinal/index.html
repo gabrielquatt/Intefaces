@@ -23,7 +23,7 @@
           </div>
 
           <div class="inner">
-            <input type="color" class="button" value="#009900" id="color" />
+            <input id="color" class="button" type="color" value="#000000" />
           </div>
           <div class="inner">
             <button id="btn_stroke" class="button" type="button">Trazo</button>
@@ -35,13 +35,12 @@
             <button id="draft" class="btn_Top" type="button">🧹️</button>
           </div>
           <div class="inner">
-            <button id="btn" class="btn_Top" type="button">📁</button>
-            <input type="file" id="file" name="file" />
+            <button id="btn_file" class="btn_Top" type="button">📁</button>
+            <input id="file" class="hide" type="file" name="file" />
           </div>
           <div class="inner">
-            <button id="reset" class="btn_Top" type="button">🔄</button>
+            <button id="btn_reset" class="btn_Top" type="button">🔄</button>
           </div>
-      
         </div>
       </div>
 
@@ -81,7 +80,9 @@
             </div>
             <hr />
             <div>
-              <button id="btn_brightness" class="button" type="button">Brillo 🔧</button>
+              <button id="btn_brightness" class="button" type="button">
+                Brillo 🔧
+              </button>
             </div>
             <hr />
           </div>
@@ -100,6 +101,8 @@
       </div>
     </div>
     <script src="js/Brush.js"></script>
+    <script src="js/Pencil.js"></script>
+    <script src="js/Eraser.js"></script>
     <script src="js/Img.js"></script>
     <script src="js/main.js"></script>
   </body>
