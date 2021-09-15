@@ -1,12 +1,11 @@
 class Brush {
-  constructor(x, y, stroke, ctx, width, type) {
+  constructor(x, y, stroke, ctx, width) {
     this.posX = x;
     this.posY = y;
     this.ctx = ctx;
     this.ctx.lineWidth = width;
     this.ctx.strokeStyle = stroke;
     this.ctx.lineCap = "round";
-    this.type = type;
   }
 
   draw(x, y) {
@@ -16,7 +15,6 @@ class Brush {
     this.ctx.stroke();
     this.setPosition(x, y);
   }
-
 
   setPosition(x, y) {
     this.posX = x;
@@ -30,16 +28,10 @@ class Brush {
     };
   }
 
-  setStroke(stroke) {
-    this.ctx.strokeStyle = stroke;
-  }
+  setStroke(stroke) {}
 
   setLineWidth(width) {
     this.ctx.lineWidth = width;
-  }
-
-  typeOf(t) {
-    return t === this.type;
   }
 
 }
