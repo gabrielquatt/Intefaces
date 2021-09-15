@@ -54,9 +54,13 @@ function newBrush(type) {
   brush = new Brush(0, 0, color, ctx, input_stroke.value, type);
   if (type == "draft") {
     brush.setStroke("white");
-    document.getElementById("canvas").style.cursor = `url('img/goma.cur'), auto`;
-  }else{
-    document.getElementById("canvas").style.cursor = `url('img/pencil-cursor.cur'), auto`;
+    document.getElementById(
+      "canvas"
+    ).style.cursor = `url('img/goma.cur'), auto`;
+  } else {
+    document.getElementById(
+      "canvas"
+    ).style.cursor = `url('img/pencil-cursor.cur'), auto`;
   }
 }
 
@@ -117,40 +121,6 @@ document
  */
 input_file.addEventListener("change", (e) => image.loadImage(e));
 
-document.getElementById("btn_brillo").addEventListener("click", brillo);
-
-function brillo() {
-  //let c = getCopy();
-  let c =  ctx.getImageData(0, 0, TEMP_WIDTH, TEMP_HEIGHT);
-  for (let x = 0; x <TEMP_HEIGHT; x++) {
-      for (let y = 0; y <  TEMP_WIDTH; y++) {
-          let arrRGBA = getPixel(c, x, y);
-          let promPixelR = masBrillo(arrRGBA[0]);
-          let promPixelG = masBrillo(arrRGBA[1]);
-          let promPixelB = masBrillo(arrRGBA[2]);
-          let promPixelA = 255;
-          setPixel(c, x, y, promPixelR, promPixelG, promPixelB, promPixelA);
-      }
-  }
-  ctx.putImageData(c, 0, 0);
-  //ctx.putImageData(c, 0, 0);
-}
-
-/**
- * Funcion auxiliar que retornara el color de pixel editado aclarandolo mas de lo actual 
- */
-function masBrillo(entrada) {
-  const brillo = 30;
-  let salida = entrada + brillo;
-
-  if (salida > 255) {
-      return 255;
-  }
-  else {
-      return salida;
-  }
-}
-
 /**
  * Evento que dispara la descarga de la imagen
  */
@@ -192,3 +162,10 @@ document
 document
   .getElementById("btn_sepia")
   .addEventListener("click", () => image.sepia());
+
+/**
+ * Filtro brillo
+ */
+document
+  .getElementById("btn_brightness")
+  .addEventListener("click", () => image.brightness());
