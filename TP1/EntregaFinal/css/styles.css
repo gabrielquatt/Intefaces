@@ -1,19 +1,17 @@
 * {
   font-family: "Oswald", sans-serif;
   font-size: large;
-  text-transform: uppercase;
+  overflow: hidden;
+  text-align: center;
 }
 body {
   margin: 0%;
   padding: 0px;
-  text-align: center;
-  background-color: #0093e9;
-  background-image: linear-gradient(160deg, #0093e9 0%, #80d0c7 100%);
+  background-image: linear-gradient( 96.5deg,  rgba(39,103,187,1) 10.4%, rgba(16,72,144,1) 87.7% );
 }
 .wrapper {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  /* grid-gap: 2px; */
   grid-auto-rows: minmax(100px, auto);
 }
 .one {
@@ -36,50 +34,84 @@ body {
 
 /* ----------------------------------------------------------- */
 
-input[type="file"] {
-  display: none;
-}
-
-.inner {
+.inner,.one {
   display: inline-block;
-}
-
-.button,
-.btn_Top {
-  background-color: rgba(245, 236, 236, 0.89);
-  cursor: pointer;
-  padding: 8px;
-  /* font-size: 15px; */
-  border-radius: 5px;
-  color: black;
-  border: 2px solid #c4c3c3;
-  transition-duration: 0.4s;
-}
-
-.btn_Top:hover,
-.button:hover {
-  border: 2px solid #111111;
-  background-color: #ffffff;
-}
-
-.btn_Top {
-  margin-top: 20%;
 }
 
 .filters {
   padding: 40px;
 }
 
-.container_canvas{
+.container_canvas {
+  padding: 0%;
+  margin: 0px 30px 0px 30px;
+  border: 3px solid black;
   background-color: white;
 }
-.container{
+.container {
   background-color: none;
   padding: 15px;
 }
+
+.menu {
+  border: black 2px solid;
+  background-image: linear-gradient( 76.3deg,  rgba(44,62,78,1) 12.6%, rgba(69,103,131,1) 82.8% );
+  padding: 2px;
+  border-radius: 5px;
+}
+.menu__tools{
+  padding: 20px;
+  margin: 0% 24% 0% 24%;
+}
+.menu__filters{
+  margin: 10% 5% 2% 5%;
+}
+
+.menu__save{
+  padding: 10px;
+  margin: 0% 20% 0% 20%;
+}
+
+input[type="file"] {
+  display: none;
+}
+
 .hide {
   display: none;
 }
-.dropDown{
+.dropDown {
   position: absolute;
+  margin-top: 2px;
+}
+
+.btn-grad-yellow {background-image: linear-gradient(to right, #F09819 0%, #EDDE5D  51%, #F09819  100%)}
+.btn-grad-blue {background-image: linear-gradient(to right, #1FA2FF 0%, #12D8FA  51%, #1FA2FF  100%)}
+.btn-grad-red {background-image: linear-gradient(to right, #e52d27 0%, #b31217  51%, #e52d27  100%)}
+.btn-grad-white {background-image: linear-gradient(to right, #8e9eab 0%, #eef2f3  51%, #8e9eab  100%)}
+.btn-grad-green {background-image: linear-gradient(to right, #56ab2f 0%, #a8e063  51%, #56ab2f  100%)}
+
+.btn-grad {
+  text-transform: uppercase;
+  transition: 0.5s;
+  background-size: 200% auto;            
+  border-radius: 2px;
+  display: block;
+ 
+  border: none;
+  cursor: pointer; 
+}
+
+.btn-grad:hover {
+  background-position: right center; /* change the direction of the change here */
+  text-decoration: none;
+}
+
+h2,h4,p{
+  margin:  0px 10px 0px 10px;
+  color: white
+}
+
+img{
+  width: 100px;
+  height:100px;
 }

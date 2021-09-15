@@ -213,15 +213,14 @@ class Img {
     link.click();
   }
 
-  brightness() {
-    //let c = getCopy();
-    let c = this.ctx.getImageData(0, 0, this.tmp_width, this.tmp_height);
+  brightness(b) {
+    let c = this.getCopy();
     for (let x = 0; x < this.tmp_height; x++) {
       for (let y = 0; y < this.tmp_width; y++) {
         let arrRGBA = this.getPixel(c, x, y);
-        let promPixelR = this.moreBrightness(arrRGBA[0]);
-        let promPixelG = this.moreBrightness(arrRGBA[1]);
-        let promPixelB = this.moreBrightness(arrRGBA[2]);
+        let promPixelR = this.moreBrightness(arrRGBA[0],b);
+        let promPixelG = this.moreBrightness(arrRGBA[1],b);
+        let promPixelB = this.moreBrightness(arrRGBA[2],b);
         let promPixelA = 255;
         this.setPixel(c, x, y, promPixelR, promPixelG, promPixelB, promPixelA);
       }
@@ -232,9 +231,12 @@ class Img {
   /**
    * Funcion auxiliar que retornara el color de pixel editado aclarandolo mas de lo actual
    */
-  moreBrightness(entrada) {
-    const brillo = 30;
-    let salida = entrada + brillo;
+  moreBrightness(entrada,b) {
+    let porc = 0;
+    for (let i = 0; i <= b; i++) {
+      porc=porc+20;
+    }
+    let salida = entrada + porc;
     return salida > 255 ? 255 : salida;
   }
 }

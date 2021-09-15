@@ -20,6 +20,9 @@ let color = `rgba(${0},${0},${0},${255})`;
 /** Input para cambiar tamaño del trazo */
 let input_stroke = document.getElementById("stroke");
 
+/** Input para cambiar el nivel de brillo */
+let input_brightness = document.getElementById("brightness");
+
 /** Cambiar tamaño del pincel */
 input_stroke.addEventListener("change", () => {
   if (brush) brush.setLineWidth(input_stroke.value);
@@ -168,4 +171,4 @@ document
  */
 document
   .getElementById("btn_brightness")
-  .addEventListener("click", () => image.brightness());
+  .addEventListener("click", () => image.brightness(input_brightness.value));
