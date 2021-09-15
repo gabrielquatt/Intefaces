@@ -14,9 +14,11 @@ let brush = null;
 /** Estado del mouse */
 let mouseDown = false;
 
-/** Input para cambiar el nivel de brillo */
-let input_brightness = document.getElementById("brightness");
-
+/**
+ ****************************************************************************
+ *                 Acciones al seleccionar lapiz o borrador
+ *****************************************************************************
+ */
 /** Seleccion del lapiz */
 document.getElementById("brush").addEventListener("click", (e) => {
   setBrush("brush");
@@ -26,12 +28,6 @@ document.getElementById("brush").addEventListener("click", (e) => {
 document.getElementById("draft").addEventListener("click", () => {
   setBrush("draft");
 });
-
-/**
- ****************************************************************************
- *                 Acciones al seleccionar lapiz o borrador
- *****************************************************************************
- */
 
 /**
  * Crea nueva instancia del pincel
@@ -173,6 +169,7 @@ document
 /**
  * Filtro brillo
  */
+let input_brightness = document.getElementById("brightness");
 document
   .getElementById("btn_brightness")
   .addEventListener("click", () => image.brightness(input_brightness.value));
