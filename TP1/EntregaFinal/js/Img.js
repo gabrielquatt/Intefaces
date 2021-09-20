@@ -290,6 +290,7 @@ class Img {
     for (let x = offset; x < c.width; x++) {
       for (let y = offset; y < c.height; y++) {
         let acc = this.boxBlur(original, x, y, kernel, offset);
+
         this.setPixel(c, x, y, acc[0], acc[1], acc[2], acc[3]);
       }
     }
