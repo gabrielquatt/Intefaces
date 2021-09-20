@@ -11,9 +11,13 @@ class Img {
     /** Proporcion de la imagen */
     this.prop = 1;
 
-    /** Tamaño temporal del canvas ajustado a la imagen */
+    /** Tamaño temporal de la imagen ajustado al canvas */
     this.tmp_width = width;
     this.tmp_height = height;
+
+    /** posicion de la imagen para que se ubique en el centro */
+    this.posx = 0;
+    this.posy = 0;
   }
 
   /**
@@ -44,7 +48,13 @@ class Img {
     if (this.img.src) {
       this.setSize();
       ctx.imageSmoothingEnabled = true;
-      ctx.drawImage(this.img, 0, 0, this.tmp_width, this.tmp_height);
+      ctx.drawImage(
+        this.img,
+        this.posx,
+        this.posy,
+        this.tmp_width,
+        this.tmp_height
+      );
     }
   }
 
@@ -64,9 +74,8 @@ class Img {
     this.tmp_width = this.img.width * this.prop;
     this.tmp_height = this.img.height * this.prop;
 
-    // Nuevas dimensiones del canvas (para mejor descarga de imagen)
-    this.canvas.width = this.tmp_width;
-    this.canvas.height = this.tmp_height;
+    this.posx = (this.WIDTH - this.tmp_width) / 2;
+    this.posy = (this.HEIGHT - this.tmp_height) / 2;
   }
 
   /**
@@ -90,8 +99,6 @@ class Img {
    * Borra el contenido y restaura dimensiones originales del canvas
    */
   resetCanvas() {
-    this.canvas.width = this.WIDTH;
-    this.canvas.height = this.HEIGHT;
     this.ctx.clearRect(0, 0, this.WIDTH, this.HEIGHT);
   }
 
@@ -116,11 +123,25 @@ class Img {
   }
 
   /**
+   * @param { * } param  se retorna el canvas sin antes dibujar la imagen
    * @returns objeto que contiene los datos de la imagen o dibujo en canvas
    */
-  getCopy() {
-    this.ctx.drawImage(this.img, 0, 0, this.tmp_width, this.tmp_height);
-    return this.ctx.getImageData(0, 0, this.tmp_width, this.tmp_height);
+  getCopy(param) {
+    if (!param) {
+      this.ctx.drawImage(
+        this.img,
+        this.posx,
+        this.posy,
+        this.tmp_width,
+        this.tmp_height
+      );
+    }
+    return this.ctx.getImageData(
+      this.posx,
+      this.posy,
+      this.tmp_width,
+      this.tmp_height
+    );
   }
 
   /**
@@ -128,8 +149,8 @@ class Img {
    */
   sepia() {
     let c = this.getCopy();
-    for (let x = 0; x < this.tmp_height; x++) {
-      for (let y = 0; y < this.tmp_width; y++) {
+    for (let x = 0; x < c.width; x++) {
+      for (let y = 0; y < c.height; y++) {
         let arr = this.getPixel(c, x, y);
         let promPxR = 0.393 * arr[0] + 0.769 * arr[1] + 0.189 * arr[2];
         let promPxG = 0.349 * arr[0] + 0.686 * arr[1] + 0.168 * arr[2];
@@ -138,7 +159,7 @@ class Img {
         this.setPixel(c, x, y, promPxR, promPxG, promPxB, promPxA);
       }
     }
-    this.ctx.putImageData(c, 0, 0);
+    this.ctx.putImageData(c, this.posx, this.posy);
   }
 
   /**
@@ -146,8 +167,8 @@ class Img {
    */
   binarization() {
     let c = this.getCopy();
-    for (let x = 0; x < this.tmp_height; x++) {
-      for (let y = 0; y < this.tmp_width; y++) {
+    for (let x = 0; x < c.width; x++) {
+      for (let y = 0; y < c.height; y++) {
         let arrRGBA = this.getPixel(c, x, y);
         let result = this.prom(arrRGBA) > 127 ? 255 : 0;
         let pixelR = result;
@@ -157,7 +178,7 @@ class Img {
         this.setPixel(c, x, y, pixelR, pixelG, pixelB, pixelA);
       }
     }
-    this.ctx.putImageData(c, 0, 0);
+    this.ctx.putImageData(c, this.posx, this.posy);
   }
 
   /**
@@ -173,8 +194,8 @@ class Img {
    */
   negative() {
     let c = this.getCopy();
-    for (let x = 0; x < this.tmp_height; x++) {
-      for (let y = 0; y < this.tmp_width; y++) {
+    for (let x = 0; x < c.width; x++) {
+      for (let y = 0; y < c.height; y++) {
         let arrRGBA = this.getPixel(c, x, y);
         let promPixelR = 255 - arrRGBA[0];
         let promPixelG = 255 - arrRGBA[1];
@@ -183,7 +204,7 @@ class Img {
         this.setPixel(c, x, y, promPixelR, promPixelG, promPixelB, promPixelA);
       }
     }
-    this.ctx.putImageData(c, 0, 0);
+    this.ctx.putImageData(c, this.posx, this.posy);
   }
 
   /**
@@ -225,8 +246,8 @@ class Img {
    */
   brightness(b) {
     let c = this.getCopy();
-    for (let x = 0; x < c.height; x++) {
-      for (let y = 0; y < c.width; y++) {
+    for (let x = 0; x < c.width; x++) {
+      for (let y = 0; y < c.height; y++) {
         let arrRGBA = this.getPixel(c, x, y);
         let promPixelR = this.moreBrightness(arrRGBA[0], b);
         let promPixelG = this.moreBrightness(arrRGBA[1], b);
@@ -235,7 +256,7 @@ class Img {
         this.setPixel(c, x, y, promPixelR, promPixelG, promPixelB, promPixelA);
       }
     }
-    this.ctx.putImageData(c, 0, 0);
+    this.ctx.putImageData(c, this.posx, this.posy);
   }
 
   /**
@@ -257,40 +278,68 @@ class Img {
    *
    */
   blur() {
-    let original = this.getCopy();
-    let c = this.getCopy();
-    for (let x = 2; x < c.width - 2; x++) {
-      for (let y = 2; y < c.height - 2; y++) {
-        let acc = this.boxBlur(original, x, y);
+    let original = this.getCopy(1);
+    let c = this.getCopy(1);
+
+    // obtener matriz
+    let kernel = this.getKernel();
+
+    // mitad del kernel
+    let offset = Math.ceil(kernel.length / 2);
+
+    for (let x = offset; x < c.width; x++) {
+      for (let y = offset; y < c.height; y++) {
+        let acc = this.boxBlur(original, x, y, kernel, offset);
         this.setPixel(c, x, y, acc[0], acc[1], acc[2], acc[3]);
       }
     }
-    this.ctx.putImageData(c, 0, 0);
+    this.ctx.putImageData(c, this.posx - 1, this.posy - 1);
+  }
+
+  /**
+   *
+   * @returns matriz para aplicar filtros
+   */
+  getKernel() {
+    // box blur kernel
+    // let kernel = [
+    //   [1 / 9, 1 / 9, 1 / 9],
+    //   [1 / 9, 1 / 9, 1 / 9],
+    //   [1 / 9, 1 / 9, 1 / 9],
+    // ];
+
+    // Gaussian kernel
+    return [
+      [1 / 256, 4 / 256, 6 / 256, 4 / 256, 1 / 256],
+      [4 / 256, 16 / 256, 24 / 256, 16 / 256, 4 / 256],
+      [6 / 256, 24 / 256, 36 / 256, 24 / 256, 6 / 256],
+      [4 / 256, 16 / 256, 24 / 256, 16 / 256, 4 / 256],
+      [1 / 256, 4 / 256, 6 / 256, 4 / 256, 1 / 256],
+    ];
+
+    // High-pass kernel
+    // let kernel = [
+    //   [0, -0.5, 0],
+    //   [-0.5, 3, -0.5],
+    //   [0, -0.5, 0],
+    // ];
   }
 
   /**
    * @param { Image } imagen
-   * @param { x, y } coordenadas de un pixel
-   * @returns { Array(4) } promedio de valores r,g,b,a de los pixels adyacentes al pixel dado.
+   * @param { x, y } coordenadas de un pixel.
+   * @returns { Array(4) } promedio r,g,b,a de pixels adyacentes al aplicar formula del kernel.
    */
-  boxBlur(image, x, y) {
-    // se pueden aplicar otros filtros cambiando el kernel
-    let kernel = [
-      [1 / 9, 1 / 9, 1 / 9],
-      [1 / 9, 1 / 9, 1 / 9],
-      [1 / 9, 1 / 9, 1 / 9],
-    ];
-    let acc = [0, 0, 0, 0];
-    let offset = 2;
-    for (let i = 0; i <= offset; i++) {
-      for (let j = 0; j <= offset; j++) {
+  boxBlur(image, x, y, kernel, offset) {
+    let acc = [0, 0, 0, 255];
+    for (let i = 0; i < kernel.length; i++) {
+      for (let j = 0; j < kernel.length; j++) {
         let xn = x + i - offset;
         let yn = y + j - offset;
         let pixel = this.getPixel(image, xn, yn);
         acc[0] += pixel[0] * kernel[i][j];
         acc[1] += pixel[1] * kernel[i][j];
         acc[2] += pixel[2] * kernel[i][j];
-        acc[3] += pixel[3] * kernel[i][j];
       }
     }
     return acc;
