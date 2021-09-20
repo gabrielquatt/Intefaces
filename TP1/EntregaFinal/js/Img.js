@@ -40,8 +40,8 @@ class Img {
    * Muestra la imagen en el canvas
    */
   drawImage() {
+    this.resetCanvas();
     if (this.img.src) {
-      this.resetCanvas();
       this.setSize();
       ctx.imageSmoothingEnabled = true;
       ctx.drawImage(this.img, 0, 0, this.tmp_width, this.tmp_height);
@@ -174,12 +174,17 @@ class Img {
    * Devuelve arreglo de pixel con los colores Red, Grenn, Blue y Alpha
    */
   getPixel(imageData, x, y) {
-    let index = (x + y * imageData.height) * 4;
+    let index = this.getIndex(imageData, x, y);
+    if (index < 0) return null;
     let r = imageData.data[index];
     let g = imageData.data[index + 1];
     let b = imageData.data[index + 2];
     let a = imageData.data[index + 3];
     return [r, g, b, a];
+  }
+
+  getIndex(imageData, x, y) {
+    return (x + y * imageData.height) * 4;
   }
 
   /**
@@ -218,9 +223,9 @@ class Img {
     for (let x = 0; x < this.tmp_height; x++) {
       for (let y = 0; y < this.tmp_width; y++) {
         let arrRGBA = this.getPixel(c, x, y);
-        let promPixelR = this.moreBrightness(arrRGBA[0],b);
-        let promPixelG = this.moreBrightness(arrRGBA[1],b);
-        let promPixelB = this.moreBrightness(arrRGBA[2],b);
+        let promPixelR = this.moreBrightness(arrRGBA[0], b);
+        let promPixelG = this.moreBrightness(arrRGBA[1], b);
+        let promPixelB = this.moreBrightness(arrRGBA[2], b);
         let promPixelA = 255;
         this.setPixel(c, x, y, promPixelR, promPixelG, promPixelB, promPixelA);
       }
@@ -231,12 +236,77 @@ class Img {
   /**
    * Funcion auxiliar que retornara el color de pixel editado aclarandolo mas de lo actual
    */
-  moreBrightness(entrada,b) {
+  moreBrightness(entrada, b) {
     let porc = 0;
     for (let i = 0; i <= b; i++) {
-      porc=porc+20;
+      porc = porc + 20;
     }
     let salida = entrada + porc;
     return salida > 255 ? 255 : salida;
+  }
+
+  /**
+   * Fuentes:
+   * https://www.codingame.com/playgrounds/2524/basic-image-manipulation/filtering
+   * https://idmnyu.github.io/p5.js-image/Blur/index.html
+   *
+   */
+  blur() {
+    let original = this.getCopy();
+    let c = this.getCopy();
+    for (let x = 0; x < c.width; x++) {
+      for (let y = 0; y < c.height; y++) {
+        let acc = this.boxBlur(original, x, y);
+        this.setPixel(c, x, y, acc[0], acc[1], acc[2], acc[3]);
+      }
+    }
+    this.ctx.putImageData(c, 0, 0);
+  }
+
+  boxBlur(image, x, y) {
+    let pixels = this.getArroundPixels(image, x, y);
+    return pixels.reduce(
+      (acc, cur) => {
+        acc[0] += cur[0] * (1 / 9);
+        acc[1] += cur[1] * (1 / 9);
+        acc[2] += cur[2] * (1 / 9);
+        acc[3] += cur[3] * (1 / 9);
+        return acc;
+      },
+      [0, 0, 0, 0]
+    );
+  }
+
+  /**
+   * (((x - 1 + w) % w) + w * ((y - 1 + h) % h)) * 4; // location of the UPPER LEFT
+   * (((x - 1 + w) % w) + w * ((y + 0 + h) % h)) * 4; // location of the LEFT
+   * (((x - 1 + w) % w) + w * ((y + 1 + h) % h)) * 4; // location of the LOWER LEFT
+   *
+   * (((x - 0 + w) % w) + w * ((y - 1 + h) % h)) * 4; // location of the UPPER CENTER
+   * (((x - 0 + w) % w) + w * ((y + 0 + h) % h)) * 4; // location of the CENTER
+   * (((x - 0 + w) % w) + w * ((y + 1 + h) % h)) * 4; // location of the LOWER CENTER
+   *
+   * (((x + 1 + w) % w) + w * ((y - 1 + h) % h)) * 4; // location of the UPPER RIGHT
+   * (((x + 1 + w) % w) + w * ((y + 0 + h) % h)) * 4; // location of the RIGHT
+   * (((x + 1 + w) % w) + w * ((y + 1 + h) % h)) * 4; // location of the LOWER RIGHT
+   *
+   * @param {*} x posicion de el eje x de un pixel
+   * @param {*} y posicion de el eje y de un pixel
+   * @returns { Array } pixeles alrededor del pixel dado
+   */
+  getArroundPixels(image, x, y) {
+    let acc = [];
+    let offset = 2;
+    let pixelActual = this.getPixel(image, x, y);
+    let w = image.width;
+    let h = image.height;
+    for (let i = -1; i < offset; i++) {
+      for (let j = -1; j < offset; j++) {
+        // (((x + i + w) % w) + w * ((y + j + h) % h)) * 4;
+        let pixelAdyacente = this.getPixel(image, x + i, y + j);
+        acc.push(pixelAdyacente != null ? pixelAdyacente : pixelActual);
+      }
+    }
+    return acc;
   }
 }
