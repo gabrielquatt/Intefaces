@@ -181,6 +181,9 @@ document
   .getElementById("btn_brightness")
   .addEventListener("click", () => image.brightness(input_brightness.value));
 
+/**
+ * Filtro desenfoque
+ */
 document
   .getElementById("btn_blur")
   .addEventListener("click", () => image.blur());

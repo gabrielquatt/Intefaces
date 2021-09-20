@@ -175,7 +175,6 @@ class Img {
    */
   getPixel(imageData, x, y) {
     let index = this.getIndex(imageData, x, y);
-    if (index < 0) return null;
     let r = imageData.data[index];
     let g = imageData.data[index + 1];
     let b = imageData.data[index + 2];
@@ -184,14 +183,14 @@ class Img {
   }
 
   getIndex(imageData, x, y) {
-    return (x + y * imageData.height) * 4;
+    return (x + y * imageData.width) * 4;
   }
 
   /**
    * Setea alores de un Pixel con los valores enviados a la funcion
    */
   setPixel(imageData, x, y, r, g, b, a) {
-    let index = (x + y * imageData.height) * 4;
+    let index = this.getIndex(imageData, x, y);
     imageData.data[index] = r;
     imageData.data[index + 1] = g;
     imageData.data[index + 2] = b;
@@ -218,10 +217,14 @@ class Img {
     link.click();
   }
 
+  /**
+   * Añadir brillo a la imagen
+   * @param { Number } b fuerza del brillo  
+   */
   brightness(b) {
     let c = this.getCopy();
-    for (let x = 0; x < this.tmp_height; x++) {
-      for (let y = 0; y < this.tmp_width; y++) {
+    for (let x = 0; x < c.height; x++) {
+      for (let y = 0; y < c.width; y++) {
         let arrRGBA = this.getPixel(c, x, y);
         let promPixelR = this.moreBrightness(arrRGBA[0], b);
         let promPixelG = this.moreBrightness(arrRGBA[1], b);
@@ -247,15 +250,15 @@ class Img {
 
   /**
    * Fuentes:
-   * https://www.codingame.com/playgrounds/2524/basic-image-manipulation/filtering
+   * https://www.codingame.com/playgrounds/2524/basic-image-manipulation/kerneling
    * https://idmnyu.github.io/p5.js-image/Blur/index.html
    *
    */
   blur() {
     let original = this.getCopy();
     let c = this.getCopy();
-    for (let x = 0; x < c.width; x++) {
-      for (let y = 0; y < c.height; y++) {
+    for (let x = 2; x < c.width - 2; x++) {
+      for (let y = 2; y < c.height - 2; y++) {
         let acc = this.boxBlur(original, x, y);
         this.setPixel(c, x, y, acc[0], acc[1], acc[2], acc[3]);
       }
@@ -263,48 +266,28 @@ class Img {
     this.ctx.putImageData(c, 0, 0);
   }
 
-  boxBlur(image, x, y) {
-    let pixels = this.getArroundPixels(image, x, y);
-    return pixels.reduce(
-      (acc, cur) => {
-        acc[0] += cur[0] * (1 / 9);
-        acc[1] += cur[1] * (1 / 9);
-        acc[2] += cur[2] * (1 / 9);
-        acc[3] += cur[3] * (1 / 9);
-        return acc;
-      },
-      [0, 0, 0, 0]
-    );
-  }
-
   /**
-   * (((x - 1 + w) % w) + w * ((y - 1 + h) % h)) * 4; // location of the UPPER LEFT
-   * (((x - 1 + w) % w) + w * ((y + 0 + h) % h)) * 4; // location of the LEFT
-   * (((x - 1 + w) % w) + w * ((y + 1 + h) % h)) * 4; // location of the LOWER LEFT
-   *
-   * (((x - 0 + w) % w) + w * ((y - 1 + h) % h)) * 4; // location of the UPPER CENTER
-   * (((x - 0 + w) % w) + w * ((y + 0 + h) % h)) * 4; // location of the CENTER
-   * (((x - 0 + w) % w) + w * ((y + 1 + h) % h)) * 4; // location of the LOWER CENTER
-   *
-   * (((x + 1 + w) % w) + w * ((y - 1 + h) % h)) * 4; // location of the UPPER RIGHT
-   * (((x + 1 + w) % w) + w * ((y + 0 + h) % h)) * 4; // location of the RIGHT
-   * (((x + 1 + w) % w) + w * ((y + 1 + h) % h)) * 4; // location of the LOWER RIGHT
-   *
-   * @param {*} x posicion de el eje x de un pixel
-   * @param {*} y posicion de el eje y de un pixel
-   * @returns { Array } pixeles alrededor del pixel dado
+   * @param { Image } imagen
+   * @param { x, y } coordenadas de un pixel
+   * @returns { Array(4) } promedio de valores r,g,b,a de los pixels adyacentes al pixel dado.
    */
-  getArroundPixels(image, x, y) {
-    let acc = [];
+  boxBlur(image, x, y) {
+    let kernel = [
+      [1 / 9, 1 / 9, 1 / 9],
+      [1 / 9, 1 / 9, 1 / 9],
+      [1 / 9, 1 / 9, 1 / 9],
+    ];
+    let acc = [0, 0, 0, 0];
     let offset = 2;
-    let pixelActual = this.getPixel(image, x, y);
-    let w = image.width;
-    let h = image.height;
-    for (let i = -1; i < offset; i++) {
-      for (let j = -1; j < offset; j++) {
-        // (((x + i + w) % w) + w * ((y + j + h) % h)) * 4;
-        let pixelAdyacente = this.getPixel(image, x + i, y + j);
-        acc.push(pixelAdyacente != null ? pixelAdyacente : pixelActual);
+    for (let i = 0; i <= offset; i++) {
+      for (let j = 0; j <= offset; j++) {
+        let xn = x + i - offset;
+        let yn = y + j - offset;
+        let pixel = this.getPixel(image, xn, yn);
+        acc[0] += pixel[0] * kernel[i][j];
+        acc[1] += pixel[1] * kernel[i][j];
+        acc[2] += pixel[2] * kernel[i][j];
+        acc[3] += pixel[3] * kernel[i][j];
       }
     }
     return acc;
