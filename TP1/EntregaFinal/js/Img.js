@@ -58,7 +58,7 @@ class Img {
         ? this.aspectRatio()
         : 1;
 
-    // si la proporcion es 1, la imagen mantendra su tamaño
+    // si la proporcion es 1, la imagen conserva su tamaño
     // si la porporcion es menor, (Ej: 0.75) el tamaño de la imagen
     // sera solo el 75% de la original
     this.tmp_width = this.img.width * this.prop;
@@ -70,6 +70,8 @@ class Img {
   }
 
   /**
+   * Fuente: https://es.plusmaths.com/calculadora/porcentajes/diferencia
+   *
    * Si la imagen es mayor al tamaño maximo del canvas
    * Esta funcion determina que porcentaje de la imagen entra en el canvas
    *
@@ -79,14 +81,8 @@ class Img {
    * @returns { Number } entre 0 y 1
    */
   aspectRatio() {
-    let w =
-      this.img.width > this.WIDTH
-        ? (this.WIDTH - this.img.width) / this.img.width
-        : 1;
-    let h =
-      this.img.height > this.HEIGHT
-        ? (this.HEIGHT - this.img.height) / this.img.height
-        : 1;
+    let w = (this.WIDTH - this.img.width) / this.img.width;
+    let h = (this.HEIGHT - this.img.height) / this.img.height;
     return 1 - (w < h ? w : h) * -1;
   }
 
@@ -108,7 +104,19 @@ class Img {
   }
 
   /**
-   * @returns objeto que contiene los datos de la imagen para el rectángulo dado del canvas
+   * Descargar imagen
+   */
+  saveImage() {
+    let link = document.createElement("a");
+    link.download = "canvas.png";
+    link.href = this.canvas
+      .toDataURL("image/png")
+      .replace("image/png", "image/octet-stream");
+    link.click();
+  }
+
+  /**
+   * @returns objeto que contiene los datos de la imagen o dibujo en canvas
    */
   getCopy() {
     this.ctx.drawImage(this.img, 0, 0, this.tmp_width, this.tmp_height);
@@ -153,6 +161,14 @@ class Img {
   }
 
   /**
+   * @returns promedio de colores de un pixel (dado en un arreglo)
+   * @param { Array } arr pixel
+   */
+  prom(arr) {
+    return Math.floor((arr[0] + arr[1] + arr[2]) / 3);
+  }
+
+  /**
    * Imagen donde las luces tienen tonos oscuros y las sombras tonos claros
    */
   negative() {
@@ -182,6 +198,12 @@ class Img {
     return [r, g, b, a];
   }
 
+  /**
+   *
+   * @param { Image } imageData
+   * @param { x ,y } coordenadas
+   * @returns posicion del primer index del pixel
+   */
   getIndex(imageData, x, y) {
     return (x + y * imageData.width) * 4;
   }
@@ -198,28 +220,8 @@ class Img {
   }
 
   /**
-   * @returns promedio de colores de un pixel (dado en un arreglo)
-   * @param { Array } arr pixel
-   */
-  prom(arr) {
-    return Math.floor((arr[0] + arr[1] + arr[2]) / 3);
-  }
-
-  /**
-   * Descargar imagen
-   */
-  saveImage() {
-    let link = document.createElement("a");
-    link.download = "canvas.png";
-    link.href = this.canvas
-      .toDataURL("image/png")
-      .replace("image/png", "image/octet-stream");
-    link.click();
-  }
-
-  /**
    * Añadir brillo a la imagen
-   * @param { Number } b fuerza del brillo  
+   * @param { Number } b fuerza del brillo
    */
   brightness(b) {
     let c = this.getCopy();
@@ -272,6 +274,7 @@ class Img {
    * @returns { Array(4) } promedio de valores r,g,b,a de los pixels adyacentes al pixel dado.
    */
   boxBlur(image, x, y) {
+    // se pueden aplicar otros filtros cambiando el kernel
     let kernel = [
       [1 / 9, 1 / 9, 1 / 9],
       [1 / 9, 1 / 9, 1 / 9],
