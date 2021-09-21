@@ -318,7 +318,7 @@ class Img {
     v = maxColor / 255;
 
     return [h, s, v];
-
+  }
   /**
    * Fuentes:
    * https://www.codingame.com/playgrounds/2524/basic-image-manipulation/kerneling
@@ -403,7 +403,7 @@ class Img {
     return acc;
   }
 
-}
+
 
  HSVtoRGB(h, s, v) {
   let r, g, b, i, f, p, q, t;
