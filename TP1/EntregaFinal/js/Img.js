@@ -71,11 +71,11 @@ class Img {
     // si la proporcion es 1, la imagen conserva su tamaño
     // si la porporcion es menor, (Ej: 0.75) el tamaño de la imagen
     // sera solo el 75% de la original
-    this.tmp_width = this.img.width * this.prop;
-    this.tmp_height = this.img.height * this.prop;
+    this.tmp_width = Math.ceil(this.img.width * this.prop);
+    this.tmp_height = Math.ceil(this.img.height * this.prop);
 
-    this.posx = (this.WIDTH - this.tmp_width) / 2;
-    this.posy = (this.HEIGHT - this.tmp_height) / 2;
+    this.posx = Math.ceil((this.WIDTH - this.tmp_width) / 2);
+    this.posy = Math.ceil((this.HEIGHT - this.tmp_height) / 2);
   }
 
   /**
@@ -212,6 +212,7 @@ class Img {
    */
   getPixel(imageData, x, y) {
     let index = this.getIndex(imageData, x, y);
+
     let r = imageData.data[index];
     let g = imageData.data[index + 1];
     let b = imageData.data[index + 2];
@@ -271,22 +272,21 @@ class Img {
     return salida > 255 ? 255 : salida;
   }
 
-
-   saturacion() {
+  saturacion() {
     let c = this.getCopy();
     for (let x = 0; x < c.width; x++) {
-        for (let y = 0; y < c.height; y++) {
-            let pixelRGBA = this.getPixel(c, x, y);
-            let hsv = this.rgbToHsv(pixelRGBA[0], pixelRGBA[1], pixelRGBA[2]);
-            let rgb = this.HSVtoRGB(hsv[0], (hsv[1] + 0.5), hsv[2]);
-            let a = 255;
-            this.setPixel(c, x, y, rgb[0], rgb[1], rgb[2], a);
-        }
+      for (let y = 0; y < c.height; y++) {
+        let pixelRGBA = this.getPixel(c, x, y);
+        let hsv = this.rgbToHsv(pixelRGBA[0], pixelRGBA[1], pixelRGBA[2]);
+        let rgb = this.HSVtoRGB(hsv[0], hsv[1] + 0.5, hsv[2]);
+        let a = 255;
+        this.setPixel(c, x, y, rgb[0], rgb[1], rgb[2], a);
+      }
     }
-    this.ctx.putImageData(c, 0, 0);
+    this.ctx.putImageData(c, this.posx, this.posy);
   }
 
- rgbToHsv(r, g, b) {
+  rgbToHsv(r, g, b) {
     let h;
     let s;
     let v;
@@ -296,23 +296,23 @@ class Img {
     let delta = maxColor - minColor;
 
     if (delta == 0) {
-        h = 0;
+      h = 0;
     } else if (r == maxColor) {
-        h = (6 + (g - b) / delta) % 6;
+      h = (6 + (g - b) / delta) % 6;
     } else if (g == maxColor) {
-        h = 2 + (b - r) / delta;
+      h = 2 + (b - r) / delta;
     } else if (b == maxColor) {
-        h = 4 + (r - g) / delta;
+      h = 4 + (r - g) / delta;
     } else {
-        h = 0;
+      h = 0;
     }
 
     h = h / 6;
 
     if (maxColor != 0) {
-        s = delta / maxColor;
+      s = delta / maxColor;
     } else {
-        s = 0;
+      s = 0;
     }
 
     v = maxColor / 255;
@@ -327,55 +327,33 @@ class Img {
    */
   blur() {
     let original = this.getCopy(1);
-    let c = this.getCopy(1);
+    let c = this.getCopy();
 
     // obtener matriz
     let kernel = this.getKernel();
+    let offset = Math.ceil(kernel.length / 2); // mitad del kernel
 
-    // mitad del kernel
-    let offset = Math.ceil(kernel.length / 2);
-    // console.log(offset);
     for (let x = 0; x < c.width; x++) {
       for (let y = 0; y < c.height; y++) {
-       
-        let acc = this.boxBlur(original, x, y, kernel, offset);
-        
-      
+
+        // El +1 soluciona el desplazamiento de la imagen al aplicar filtro
+        let acc = this.boxBlur(original, x + 1, y + 1, kernel, offset);
         this.setPixel(c, x, y, acc[0], acc[1], acc[2], acc[3]);
       }
-      // if(x == 3)
-      // throw console.log();
     }
-    this.ctx.putImageData(c, this.posx - 1, this.posy - 1);
+    this.ctx.putImageData(c, this.posx, this.posy);
   }
 
   /**
-   *
    * @returns matriz para aplicar filtros
    */
   getKernel() {
     // box blur kernel
-    // let kernel = [
-    //   [1 / 9, 1 / 9, 1 / 9],
-    //   [1 / 9, 1 / 9, 1 / 9],
-    //   [1 / 9, 1 / 9, 1 / 9],
-    // ];
-
-    // Gaussian kernel
     return [
-      [1 / 256, 4 / 256, 6 / 256, 4 / 256, 1 / 256],
-      [4 / 256, 16 / 256, 24 / 256, 16 / 256, 4 / 256],
-      [6 / 256, 24 / 256, 36 / 256, 24 / 256, 6 / 256],
-      [4 / 256, 16 / 256, 24 / 256, 16 / 256, 4 / 256],
-      [1 / 256, 4 / 256, 6 / 256, 4 / 256, 1 / 256],
+      [1 / 9, 1 / 9, 1 / 9],
+      [1 / 9, 1 / 9, 1 / 9],
+      [1 / 9, 1 / 9, 1 / 9],
     ];
-
-    // High-pass kernel
-    // let kernel = [
-    //   [0, -0.5, 0],
-    //   [-0.5, 3, -0.5],
-    //   [0, -0.5, 0],
-    // ];
   }
 
   /**
@@ -389,11 +367,12 @@ class Img {
       for (let j = 0; j < kernel.length; j++) {
         let xn = x + i - offset;
         let yn = y + j - offset;
-
-//  TODO correccion de bordes
-        // let xn = x <= offset ? x + offset : x;
-        // let yn = y >= c.height - offset ? y - offset : y;
-
+        if (yn < offset) {
+          yn = offset;
+        }
+        if (yn > image.height - offset) {
+          yn = image.height - offset;
+        }
         let pixel = this.getPixel(image, xn, yn);
         acc[0] += pixel[0] * kernel[i][j];
         acc[1] += pixel[1] * kernel[i][j];
@@ -403,55 +382,45 @@ class Img {
     return acc;
   }
 
-
-
- HSVtoRGB(h, s, v) {
-  let r, g, b, i, f, p, q, t;
+  HSVtoRGB(h, s, v) {
+    let r, g, b, i, f, p, q, t;
     i = Math.floor(h * 6);
     f = h * 6 - i;
     p = v * (1 - s);
     q = v * (1 - f * s);
     t = v * (1 - (1 - f) * s);
     switch (i % 6) {
-        case 0:
-            r = v;
-            g = t;
-            b = p;
-            break;
-        case 1:
-            r = q;
-            g = v;
-            b = p;
-            break;
-        case 2:
-            r = p;
-            g = v;
-            b = t;
-            break;
-        case 3:
-            r = p;
-            g = q;
-            b = v;
-            break;
-        case 4:
-            r = t;
-            g = p;
-            b = v;
-            break;
-        case 5:
-            r = v;
-            g = p;
-            b = q;
-            break;
+      case 0:
+        r = v;
+        g = t;
+        b = p;
+        break;
+      case 1:
+        r = q;
+        g = v;
+        b = p;
+        break;
+      case 2:
+        r = p;
+        g = v;
+        b = t;
+        break;
+      case 3:
+        r = p;
+        g = q;
+        b = v;
+        break;
+      case 4:
+        r = t;
+        g = p;
+        b = v;
+        break;
+      case 5:
+        r = v;
+        g = p;
+        b = q;
+        break;
     }
-    return [
-        Math.round(r * 255),
-        Math.round(g * 255),
-        Math.round(b * 255)
-    ];
-};
-
+    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+  }
 }
-
-
-
