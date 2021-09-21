@@ -134,11 +134,9 @@ document
 /**
  * Restaurar imagen original
  */
-document
-  .getElementById("btn_reset")
-  .addEventListener("click", () => {
-    image.drawImage();
-  });
+document.getElementById("btn_reset").addEventListener("click", () => {
+  image.drawImage();
+});
 
 /**
  * Borrar imagen
@@ -171,16 +169,17 @@ document
 /**
  * Filtro brillo
  */
- let input_brightness = document.getElementById("brightness");
+let input_brightness = document.getElementById("brightness");
 document
   .getElementById("btn_brightness")
   .addEventListener("click", () => image.brightness(input_brightness.value));
 
-  /**
+/**
  * Filtro Saturacion
  */
- document.getElementById("btnSaturacion")
-   .addEventListener("click", () => image.saturacion());
+document
+  .getElementById("btnSaturacion")
+  .addEventListener("click", () => image.saturacion());
 
 /**
  * Filtro desenfoque
@@ -189,3 +188,30 @@ document
   .getElementById("btn_blur")
   .addEventListener("click", () => image.blur());
 
+/**
+ * Filtro deteccion de bordes
+ */
+document
+  .getElementById("btn_edge_detection")
+  .addEventListener("click", () => image.edgeDetection());
+
+/**
+ * Filtro de agudizamiento
+ */
+document
+  .getElementById("btn_sharpening")
+  .addEventListener("click", () => image.sharpening());
+
+/**
+ * Filtro arcoiris 1
+ */
+document
+  .getElementById("btn_rainbow1")
+  .addEventListener("click", () => image.rainbow(1));
+
+/**
+ * Filtro arcoiris 2
+ */
+document
+  .getElementById("btn_rainbow2")
+  .addEventListener("click", () => image.rainbow(2));

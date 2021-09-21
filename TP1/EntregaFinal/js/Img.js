@@ -319,25 +319,61 @@ class Img {
 
     return [h, s, v];
   }
+
   /**
-   * Fuentes:
-   * https://www.codingame.com/playgrounds/2524/basic-image-manipulation/kerneling
-   * https://idmnyu.github.io/p5.js-image/Blur/index.html
-   *
+   * Filtro desenfoque
    */
   blur() {
-    let original = this.getCopy(1);
+    this.applySimpleFilter(this.getBoxBlurKernel(), 1);
+  }
+
+  /**
+   * box blur kernel
+   * @returns matriz para aplicar filtro
+   */
+  getBoxBlurKernel() {
+    return [
+      [1 / 9, 1 / 9, 1 / 9],
+      [1 / 9, 1 / 9, 1 / 9],
+      [1 / 9, 1 / 9, 1 / 9],
+    ];
+    // (tambien se puede retornar esta otra matriz)
+    // gaussian kernel
+    // return [[1 / 256, 4  / 256,  6 / 256,  4 / 256, 1 / 256],
+    //         [4 / 256, 16 / 256, 24 / 256, 16 / 256, 4 / 256],
+    //         [6 / 256, 24 / 256, 36 / 256, 24 / 256, 6 / 256],
+    //         [4 / 256, 16 / 256, 24 / 256, 16 / 256, 4 / 256],
+    //         [1 / 256, 4  / 256,  6 / 256,  4 / 256, 1 / 256]]
+  }
+
+  /**
+   * Filtro de agudizamiento (traduccion de google)
+   */
+  sharpening() {
+    this.applySimpleFilter(this.getHighPassKernel());
+  }
+
+  /**
+   * High-pass kernel
+   *  @returns matriz para aplicar filtro
+   */
+  getHighPassKernel() {
+    return [
+      [0, -0.5, 0],
+      [-0.5, 3, -0.5],
+      [0, -0.5, 0],
+    ];
+  }
+
+  /**
+   *  @param { Matriz[][] } kernel : matriz para aplicar filtros
+   */
+  applySimpleFilter(kernel, param) {
+    let original = this.getCopy(param);
     let c = this.getCopy();
-
-    // obtener matriz
-    let kernel = this.getKernel();
-    let offset = Math.ceil(kernel.length / 2); // mitad del kernel
-
     for (let x = 0; x < c.width; x++) {
       for (let y = 0; y < c.height; y++) {
-
-        // El +1 soluciona el desplazamiento de la imagen al aplicar filtro
-        let acc = this.boxBlur(original, x + 1, y + 1, kernel, offset);
+        let acc = this.boxBlur(original, x, y, kernel);
         this.setPixel(c, x, y, acc[0], acc[1], acc[2], acc[3]);
       }
     }
@@ -345,34 +381,27 @@ class Img {
   }
 
   /**
-   * @returns matriz para aplicar filtros
-   */
-  getKernel() {
-    // box blur kernel
-    return [
-      [1 / 9, 1 / 9, 1 / 9],
-      [1 / 9, 1 / 9, 1 / 9],
-      [1 / 9, 1 / 9, 1 / 9],
-    ];
-  }
-
-  /**
+   * Fuentes:
+   * https://www.codingame.com/playgrounds/2524/basic-image-manipulation/kerneling
+   *
    * @param { Image } imagen
    * @param { x, y } coordenadas de un pixel.
    * @returns { Array(4) } promedio r,g,b,a de pixels adyacentes al aplicar formula del kernel.
    */
-  boxBlur(image, x, y, kernel, offset) {
+  boxBlur(image, x, y, kernel) {
     let acc = [0, 0, 0, 255];
+    // posicion mitad del kernel
+    let offset = Math.floor(kernel.length / 2);
     for (let i = 0; i < kernel.length; i++) {
       for (let j = 0; j < kernel.length; j++) {
         let xn = x + i - offset;
         let yn = y + j - offset;
-        if (yn < offset) {
-          yn = offset;
-        }
-        if (yn > image.height - offset) {
-          yn = image.height - offset;
-        }
+        // correción de bordes negros
+        if (xn <= offset) xn = offset + 1;
+        if (xn >= image.width - offset) xn = image.width - offset;
+        if (yn <= offset) yn = offset + 1;
+        if (yn >= image.height - offset) yn = image.height - offset;
+
         let pixel = this.getPixel(image, xn, yn);
         acc[0] += pixel[0] * kernel[i][j];
         acc[1] += pixel[1] * kernel[i][j];
@@ -382,6 +411,102 @@ class Img {
     return acc;
   }
 
+  /**
+   * Deteccion de bordes
+   */
+  edgeDetection() {
+    let obj = this.getSobelKernels();
+    let kernelX = obj.kernelX;
+    let kernelY = obj.kernelY;
+
+    let original = this.getCopy();
+    let c = this.getCopy();
+    for (let x = 0; x < c.width; x++) {
+      for (let y = 0; y < c.height; y++) {
+        let color = 0;
+        let cx = 0;
+        let cy = 0;
+        for (let i = 0; i < 3; i++) {
+          for (let j = 0; j < 3; j++) {
+            let xn = x + i - 1;
+            let yn = y + j - 1;
+            let pixel = this.getPixel(original, xn, yn);
+            for (let p = 0; p < 3; p++) {
+              cx += (pixel[p] / 3) * kernelX[i][j];
+              cy += (pixel[p] / 3) * kernelY[i][j];
+            }
+            color = parseInt(Math.sqrt(cx ** 2 + cx ** 2));
+          }
+        }
+        this.setPixel(c, x, y, color, color, color, 255);
+      }
+    }
+    this.ctx.putImageData(c, this.posx, this.posy);
+  }
+
+  /**
+   *  Fuente: https://observablehq.com/@mbostock/sobel-operator
+   *
+   *
+   * Filtro arcoiris
+   * @param { number } n muestra el arcoiris 1 o 2
+   */
+  rainbow(n) {
+    let obj = this.getSobelKernels();
+    let kernelX = obj.kernelX;
+    let kernelY = obj.kernelY;
+    let original = this.getCopy();
+    let c = this.getCopy();
+
+    for (let x = 1; x < c.width; x++) {
+      for (let y = 1; y < c.height; y++) {
+        let cx = 0,
+          cy = 0;
+        for (let i = 0; i < 3; i++) {
+          for (let j = 0; j < 3; j++) {
+            let xn = x + i - 1;
+            let yn = y + j - 1;
+            let pixel = this.getPixel(original, xn, yn);
+            for (let p = 0; p < 3; p++) {
+              cx += pixel[p] * kernelX[i][j];
+              cy += pixel[p] * kernelY[i][j];
+            }
+          }
+        }
+        let t = Math.atan2(cy, cx) / (2 * Math.PI);
+        let { r, g, b } = d3.rgb(d3.interpolateSinebow(t));
+        let alpha = n == 1 ? Math.hypot(cx, cy) : 255;
+
+        this.setPixel(c, x, y, r, g, b, alpha);
+      }
+    }
+    this.ctx.putImageData(c, this.posx, this.posy);
+  }
+
+  /**
+   * @returns
+   */
+  getSobelKernels() {
+    return {
+      kernelX: [
+        [-1, 0, 1],
+        [-2, 0, 2],
+        [-1, 0, 1],
+      ],
+      kernelY: [
+        [-1, -2, -1],
+        [0, 0, 0],
+        [1, 2, 1],
+      ],
+    };
+  }
+  /**
+   *
+   * @param {*} h
+   * @param {*} s
+   * @param {*} v
+   * @returns
+   */
   HSVtoRGB(h, s, v) {
     let r, g, b, i, f, p, q, t;
     i = Math.floor(h * 6);
