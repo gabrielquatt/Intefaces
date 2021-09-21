@@ -34,4 +34,6 @@ class Brush {
     this.ctx.lineWidth = width;
   }
 
+
+
 }

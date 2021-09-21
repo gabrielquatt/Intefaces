@@ -137,11 +137,8 @@ document
 document
   .getElementById("btn_reset")
   .addEventListener("click", () => {
-    image.resetCanvas();
     image.drawImage();
   });
-
-
 
 /**
  * Borrar imagen
@@ -184,5 +181,11 @@ document
  */
  document.getElementById("btnSaturacion")
    .addEventListener("click", () => image.saturacion());
-   
+
+/**
+ * Filtro desenfoque
+ */
+document
+  .getElementById("btn_blur")
+  .addEventListener("click", () => image.blur());
 
