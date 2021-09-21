@@ -286,13 +286,17 @@ class Img {
 
     // mitad del kernel
     let offset = Math.ceil(kernel.length / 2);
-
-    for (let x = offset; x < c.width; x++) {
-      for (let y = offset; y < c.height; y++) {
+    // console.log(offset);
+    for (let x = 0; x < c.width; x++) {
+      for (let y = 0; y < c.height; y++) {
+       
         let acc = this.boxBlur(original, x, y, kernel, offset);
-
+        
+      
         this.setPixel(c, x, y, acc[0], acc[1], acc[2], acc[3]);
       }
+      // if(x == 3)
+      // throw console.log();
     }
     this.ctx.putImageData(c, this.posx - 1, this.posy - 1);
   }
@@ -337,6 +341,11 @@ class Img {
       for (let j = 0; j < kernel.length; j++) {
         let xn = x + i - offset;
         let yn = y + j - offset;
+
+//  TODO correccion de bordes
+        // let xn = x <= offset ? x + offset : x;
+        // let yn = y >= c.height - offset ? y - offset : y;
+
         let pixel = this.getPixel(image, xn, yn);
         acc[0] += pixel[0] * kernel[i][j];
         acc[1] += pixel[1] * kernel[i][j];
