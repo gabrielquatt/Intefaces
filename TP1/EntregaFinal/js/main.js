@@ -75,9 +75,9 @@ input_stroke.addEventListener("change", () => {
 /**
  * Desplegar/ocultar input para seleccionar tamaño del trazo
  */
-document.getElementById("btn_stroke").addEventListener("click", () => {
-  document.getElementById("dropDown").classList.toggle("hide");
-});
+// document.getElementById("btn_stroke").addEventListener("click", () => {
+//   document.getElementById("dropDown").classList.toggle("hide");
+// });
 
 /**
  * ***********************************************************************
@@ -100,13 +100,6 @@ canvas.addEventListener("mousemove", (e) => {
     }
   }
 });
-
-// document.body.addEventListener(
-//   "mousemove", (e) => {
-//     if(brush)
-//       brush.setPosition(e.layerX, e.layerY)
-//   }
-// );
 
 /**
  * **************************************************************************
@@ -143,7 +136,9 @@ document
  */
 document
   .getElementById("btn_reset")
-  .addEventListener("click", () => image.drawImage());
+  .addEventListener("click", () => {
+    image.drawImage();
+  });
 
 /**
  * Borrar imagen
@@ -176,10 +171,16 @@ document
 /**
  * Filtro brillo
  */
-let input_brightness = document.getElementById("brightness");
+ let input_brightness = document.getElementById("brightness");
 document
   .getElementById("btn_brightness")
   .addEventListener("click", () => image.brightness(input_brightness.value));
+
+  /**
+ * Filtro Saturacion
+ */
+ document.getElementById("btnSaturacion")
+   .addEventListener("click", () => image.saturacion());
 
 /**
  * Filtro desenfoque
@@ -187,3 +188,4 @@ document
 document
   .getElementById("btn_blur")
   .addEventListener("click", () => image.blur());
+
