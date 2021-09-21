@@ -239,4 +239,102 @@ class Img {
     let salida = entrada + porc;
     return salida > 255 ? 255 : salida;
   }
+
+   saturacion() {
+    let c = this.getCopy();
+    for (let x = 0; x < this.tmp_height; x++) {
+        for (let y = 0; y < this.tmp_width; y++) {
+            let pixelRGBA = this.getPixel(c, x, y);
+            let hsv = this.rgbToHsv(pixelRGBA[0], pixelRGBA[1], pixelRGBA[2]);
+            let rgb = this.HSVtoRGB(hsv[0], (hsv[1] + 0.5), hsv[2]);
+            let a = 255;
+            this.setPixel(c, x, y, rgb[0], rgb[1], rgb[2], a);
+        }
+    }
+    this.ctx.putImageData(c, 0, 0);
+  }
+
+ rgbToHsv(r, g, b) {
+    let h;
+    let s;
+    let v;
+
+    let maxColor = Math.max(r, g, b);
+    let minColor = Math.min(r, g, b);
+    let delta = maxColor - minColor;
+
+    if (delta == 0) {
+        h = 0;
+    } else if (r == maxColor) {
+        h = (6 + (g - b) / delta) % 6;
+    } else if (g == maxColor) {
+        h = 2 + (b - r) / delta;
+    } else if (b == maxColor) {
+        h = 4 + (r - g) / delta;
+    } else {
+        h = 0;
+    }
+
+    h = h / 6;
+
+    if (maxColor != 0) {
+        s = delta / maxColor;
+    } else {
+        s = 0;
+    }
+
+    v = maxColor / 255;
+
+    return [h, s, v];
 }
+
+ HSVtoRGB(h, s, v) {
+  let r, g, b, i, f, p, q, t;
+    i = Math.floor(h * 6);
+    f = h * 6 - i;
+    p = v * (1 - s);
+    q = v * (1 - f * s);
+    t = v * (1 - (1 - f) * s);
+    switch (i % 6) {
+        case 0:
+            r = v;
+            g = t;
+            b = p;
+            break;
+        case 1:
+            r = q;
+            g = v;
+            b = p;
+            break;
+        case 2:
+            r = p;
+            g = v;
+            b = t;
+            break;
+        case 3:
+            r = p;
+            g = q;
+            b = v;
+            break;
+        case 4:
+            r = t;
+            g = p;
+            b = v;
+            break;
+        case 5:
+            r = v;
+            g = p;
+            b = q;
+            break;
+    }
+    return [
+        Math.round(r * 255),
+        Math.round(g * 255),
+        Math.round(b * 255)
+    ];
+};
+
+}
+
+
+

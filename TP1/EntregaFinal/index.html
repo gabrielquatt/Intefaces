@@ -17,58 +17,56 @@
 <body>
   <div class="wrapper">
     <div class="one">
-      <div class="container">
-        <div class="menu menu__tools">
+      <div class="inner">
+        <h2>Ejercicio Entregable – Nº1	/ Interfaces de usuario e Interacción</h2>
+      </div>
+      
+        <div class="menu">
           <div class="inner">
-            <h2>HERRAMIENTAS |</h2>
+            <button id="brush" class="btn-grad  btn-grad-white" type="button">Lapiz ✏️</button>
           </div>
           <div class="inner">
-            <button id="brush" class="btn-grad  btn-grad-white" type="button">✏️</button>
+              <p>|</p>
           </div>
           <div class="inner">
+            <p>Color</p>
             <input type="color" class="btn-grad  btn-grad-white" value="#000000" id="color" />
           </div>
           <div class="inner">
-            <button id="btn_stroke" class="btn-grad  btn-grad-white" type="button">Grosor</button>
-            <div id="dropDown" class="dropDown hide menu">
-              <input id="stroke" type="range" min="3" max="50" value="10" />
-            </div>
+            <p>|</p>
+        </div>
+          <div class="inner">
+            <p>Grosor</p>
+            <input id="stroke" type="range" min="3" max="50" value="10" />
           </div>
           <div class="inner">
-            <button id="draft" class="btn-grad  btn-grad-white" type="button">🧹️</button>
-          </div>
+            <p>|</p>
+        </div>
           <div class="inner">
-            <h2>|</h2>
-          </div>
-          <div class="inner">
-            <button id="btn_file" class="btn-grad  btn-grad-yellow" type="button">📁</button>
-            <input type="file" id="file" name="file" />
-          </div>
-          <div class="inner">
-            <button id="btn_reset" class="btn-grad  btn-grad-yellow" type="button">🔄</button>
+            <button id="draft" class="btn-grad  btn-grad-white" type="button">Borrador🧹️</button>
           </div>
         </div>
-      </div>
+     
     </div>
 
-    <div class="three">
-      <div class="container">
+    <div class="three"> 
         <div class="container_canvas">
           <canvas id="canvas" width="896" height="490"></canvas>
         </div>
-      </div>
     </div>
 
-    <div class="two">
-      <div class="outer">
-        <div class="filters menu menu__filters">
+    <div class="two">  
+        <div class="menu__filters">    
           <div>
-            <img src="img/logo.png" alt="logo">
-          </div>
-          <div>
-            <h2>Filtros</h2>
+            <h2>Integrantes Grupo:</h2>
+            <p>Facundo Arana</p>
+            <p>Gabriel Quattrini</p>
             <hr>
           </div>
+          <div>
+            <h2>Filtros Basicos</h2>
+          </div>
+          <hr>
           <div class="inner">
             <button id="btn_negative" class="btn-grad  btn-grad-white" type="button">
               Negativo 🔧
@@ -86,9 +84,8 @@
               Sepia 🔧
             </button>
           </div>
-
-          <hr>
-          <p>seleccione porcentaje de brillo</p>
+        
+          <p>Seleccione Nivel de Brillo</p>
           <div>
             <input id="brightness" type="range" min="1" max="10" value="5" />
           </div>
@@ -96,36 +93,41 @@
             <button id="btn_brightness" class="btn-grad  btn-grad-white" type="button">Brillo 🔧</button>
           </div>
           <hr>
+          <div>
+            <h2>Filtros Complejos</h2>
+          </div>
+          <hr>
           <div class="inner">
             <button class="btn-grad  btn-grad-white" type="button">
               Blur 🔧
             </button>
           </div>
-          <hr>
           <div class="inner">
-            <button class="btn-grad  btn-grad-white" type="button">
+            <button class="btn-grad  btn-grad-white" type="button" id="btnSaturacion">
               Saturacion 🔧
             </button>
           </div>
-        </div>
-      </div>
+          <hr>
+            <div>
+              <h2>Opciones</h2>
+            </div>
+            <hr>
+            <div class="inner">
+              <button id="btn_file" class="btn-grad  btn-grad-yellow" type="button">cargar img📁</button>
+              <input type="file" id="file" name="file" />
+            </div>
+            <div class="inner">
+              <button id="btn_reset" class="btn-grad  btn-grad-yellow" type="button">resetear🔄</button>
+            </div>
+            <div class="inner">
+              <button id="delete" type="button" class="btn-grad  btn-grad-red">Delete ❌</button>
+            </div>
+            <div class="inner">
+              <button id="btn_save" type="button" class="btn-grad  btn-grad-green">Save ✔️</button>
+            </div>
+          </div>
     </div>
 
-    <div class="four">
-      <div class="outer">
-        <div class="menu menu__save">
-          <div>
-            <P>Opciones</P>
-          </div>
-          <div class="inner">
-            <button id="delete" type="button" class="btn-grad  btn-grad-red">Delete ❌</button>
-          </div>
-          <div class="inner">
-            <button id="btn_save" type="button" class="btn-grad  btn-grad-green">Save ✔️</button>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
   <script src="js/Brush.js"></script>
   <script src="js/Pencil.js"></script>
