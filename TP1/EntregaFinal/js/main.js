@@ -101,6 +101,13 @@ canvas.addEventListener("mousemove", (e) => {
   }
 });
 
+// document.body.addEventListener(
+//   "mousemove", (e) => {
+//     if(brush)
+//       brush.setPosition(e.layerX, e.layerY)
+//   }
+// );
+
 /**
  * **************************************************************************
  *                    Seleccionar/guardar imagen y aplicar filtros
@@ -173,3 +180,10 @@ let input_brightness = document.getElementById("brightness");
 document
   .getElementById("btn_brightness")
   .addEventListener("click", () => image.brightness(input_brightness.value));
+
+/**
+ * Filtro desenfoque
+ */
+document
+  .getElementById("btn_blur")
+  .addEventListener("click", () => image.blur());
