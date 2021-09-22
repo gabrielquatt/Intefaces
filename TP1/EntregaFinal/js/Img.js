@@ -272,6 +272,9 @@ class Img {
     return salida > 255 ? 255 : salida;
   }
 
+   /**
+   * Añadir Saturacion a la imagen editando pixeles
+   */
   saturacion() {
     let c = this.getCopy();
     for (let x = 0; x < c.width; x++) {
@@ -286,6 +289,13 @@ class Img {
     this.ctx.putImageData(c, this.posx, this.posy);
   }
 
+  /**
+   *  funcion auxiliar para devolver el valor de los parametros r,g,b a hsv.
+   * @param {*} r 
+   * @param {*} g 
+   * @param {*} b 
+   * @returns 
+   */
   rgbToHsv(r, g, b) {
     let h;
     let s;
@@ -350,7 +360,7 @@ class Img {
    * Filtro de agudizamiento (traduccion de google)
    */
   sharpening() {
-    this.applySimpleFilter(this.getHighPassKernel());
+    this.applySimpleFilter(this.getHighPassKernel(),1);
   }
 
   /**
