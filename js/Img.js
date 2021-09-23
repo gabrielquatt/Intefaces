@@ -148,6 +148,7 @@ class Img {
    *  Imagen en blanco y negro con un matiz marrón.
    */
   sepia() {
+    if (!this.img.src) return;
     let c = this.getCopy();
     for (let x = 0; x < c.width; x++) {
       for (let y = 0; y < c.height; y++) {
@@ -166,6 +167,7 @@ class Img {
    * Imagen representada por dos colores (blanco y negro)
    */
   binarization() {
+    if (!this.img.src) return;
     let c = this.getCopy();
     for (let x = 0; x < c.width; x++) {
       for (let y = 0; y < c.height; y++) {
@@ -193,6 +195,7 @@ class Img {
    * Imagen donde las luces tienen tonos oscuros y las sombras tonos claros
    */
   negative() {
+    if (!this.img.src) return;
     let c = this.getCopy();
     for (let x = 0; x < c.width; x++) {
       for (let y = 0; y < c.height; y++) {
@@ -246,6 +249,7 @@ class Img {
    * @param { Number } b fuerza del brillo
    */
   brightness(b) {
+    if (!this.img.src) return;
     let c = this.getCopy();
     for (let x = 0; x < c.width; x++) {
       for (let y = 0; y < c.height; y++) {
@@ -272,10 +276,11 @@ class Img {
     return salida > 255 ? 255 : salida;
   }
 
-   /**
-   * Añadir Saturacion a la imagen editando pixeles
+  /**
+   *
    */
   saturacion() {
+    if (!this.img.src) return;
     let c = this.getCopy();
     for (let x = 0; x < c.width; x++) {
       for (let y = 0; y < c.height; y++) {
@@ -288,13 +293,62 @@ class Img {
     }
     this.ctx.putImageData(c, this.posx, this.posy);
   }
+  
+  /**
+   *
+   * @param {*} h
+   * @param {*} s
+   * @param {*} v
+   * @returns
+   */
+  HSVtoRGB(h, s, v) {
+    let r, g, b, i, f, p, q, t;
+    i = Math.floor(h * 6);
+    f = h * 6 - i;
+    p = v * (1 - s);
+    q = v * (1 - f * s);
+    t = v * (1 - (1 - f) * s);
+    switch (i % 6) {
+      case 0:
+        r = v;
+        g = t;
+        b = p;
+        break;
+      case 1:
+        r = q;
+        g = v;
+        b = p;
+        break;
+      case 2:
+        r = p;
+        g = v;
+        b = t;
+        break;
+      case 3:
+        r = p;
+        g = q;
+        b = v;
+        break;
+      case 4:
+        r = t;
+        g = p;
+        b = v;
+        break;
+      case 5:
+        r = v;
+        g = p;
+        b = q;
+        break;
+    }
+    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+  }
 
   /**
-   *  funcion auxiliar para devolver el valor de los parametros r,g,b a hsv.
-   * @param {*} r 
-   * @param {*} g 
-   * @param {*} b 
-   * @returns 
+   *
+   * @param {*} r
+   * @param {*} g
+   * @param {*} b
+   * @returns
    */
   rgbToHsv(r, g, b) {
     let h;
@@ -334,6 +388,7 @@ class Img {
    * Filtro desenfoque
    */
   blur() {
+    if (!this.img.src) return;
     this.applySimpleFilter(this.getBoxBlurKernel(), 1);
   }
 
@@ -347,20 +402,21 @@ class Img {
       [1 / 9, 1 / 9, 1 / 9],
       [1 / 9, 1 / 9, 1 / 9],
     ];
-    // (tambien se puede retornar esta otra matriz)
-    // gaussian kernel
+    // (con esta matriz se obtiene el mismo efecto)
     // return [[1 / 256, 4  / 256,  6 / 256,  4 / 256, 1 / 256],
     //         [4 / 256, 16 / 256, 24 / 256, 16 / 256, 4 / 256],
     //         [6 / 256, 24 / 256, 36 / 256, 24 / 256, 6 / 256],
     //         [4 / 256, 16 / 256, 24 / 256, 16 / 256, 4 / 256],
-    //         [1 / 256, 4  / 256,  6 / 256,  4 / 256, 1 / 256]]
+    //         [1 / 256, 4  / 256,  6 / 256,  4 / 256, 1 / 256]
+    // ];
   }
 
   /**
    * Filtro de agudizamiento (traduccion de google)
    */
   sharpening() {
-    this.applySimpleFilter(this.getHighPassKernel(),1);
+    if (!this.img.src) return;
+    this.applySimpleFilter(this.getHighPassKernel());
   }
 
   /**
@@ -372,6 +428,27 @@ class Img {
       [0, -0.5, 0],
       [-0.5, 3, -0.5],
       [0, -0.5, 0],
+    ];
+  }
+
+  /**
+   * Filtro dibujo en tiza
+   */
+  whiteboard() {
+    if (!this.img.src) return;
+    this.applySimpleFilter(this.getWhiteboardKernel());
+  }
+
+  /**
+   * Fuente: https://arxiv.org/pdf/1910.14067.pdf (pagina 11)
+   *
+   * @returns matriz para aplicar filtro
+   */
+  getWhiteboardKernel() {
+    return [
+      [0, 0, 1],
+      [0, -2, 0],
+      [1, 0, 0],
     ];
   }
 
@@ -425,6 +502,7 @@ class Img {
    * Deteccion de bordes
    */
   edgeDetection() {
+    if (!this.img.src) return;
     let obj = this.getSobelKernels();
     let kernelX = obj.kernelX;
     let kernelY = obj.kernelY;
@@ -455,21 +533,27 @@ class Img {
   }
 
   /**
-   *  Fuente: https://observablehq.com/@mbostock/sobel-operator
-   *
+   *  Fuentes:
+   *   https://observablehq.com/@mbostock/sobel-operator
+   *   https://d3js.org/
+   *  https://observablehq.com/@mbostock/sinebow
+   *   https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Global_Objects/Math/hypot
+   *   https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Global_Objects/Math/atan2
+   *   https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Global_Objects/Math/max
    *
    * Filtro arcoiris
    * @param { number } n muestra el arcoiris 1 o 2
    */
   rainbow(n) {
+    if (!this.img.src) return;
     let obj = this.getSobelKernels();
     let kernelX = obj.kernelX;
     let kernelY = obj.kernelY;
     let original = this.getCopy();
     let c = this.getCopy();
 
-    for (let x = 1; x < c.width; x++) {
-      for (let y = 1; y < c.height; y++) {
+    for (let x = 0; x < c.width; x++) {
+      for (let y = 1; y < c.height - 1; y++) {
         let cx = 0,
           cy = 0;
         for (let i = 0; i < 3; i++) {
@@ -477,7 +561,7 @@ class Img {
             let xn = x + i - 1;
             let yn = y + j - 1;
             let pixel = this.getPixel(original, xn, yn);
-            for (let p = 0; p < 3; p++) {
+            for (let p = 0; p < 4; p++) {
               cx += pixel[p] * kernelX[i][j];
               cy += pixel[p] * kernelY[i][j];
             }
@@ -485,8 +569,49 @@ class Img {
         }
         let t = Math.atan2(cy, cx) / (2 * Math.PI);
         let { r, g, b } = d3.rgb(d3.interpolateSinebow(t));
-        let alpha = n == 1 ? Math.hypot(cx, cy) : 255;
+        let alpha = 255;
+        if (n == 1) {
+          let color = Math.hypot(cx, cy);
+          if (!isNaN(color)) {
+            alpha = color;
+          }
+        }
+        this.setPixel(c, x, y, r, g, b, alpha);
+      }
+    }
+    this.ctx.putImageData(c, this.posx, this.posy);
+  }
 
+  /**
+   * Realza los colores rojos y azules
+   * bloquea los colores verdes
+   */
+  anaglyph() {
+    if (!this.img.src) return;
+    let obj = this.getSobelKernels();
+    let kernelX = obj.kernelX;
+    let kernelY = obj.kernelY;
+    let original = this.getCopy();
+    let c = this.getCopy();
+
+    for (let x = 0; x < c.width; x++) {
+      for (let y = 1; y < c.height - 1; y++) {
+        let color = 0;
+        let g = 0;
+        let alpha = 255;
+        for (let i = 0; i < 3; i++) {
+          for (let j = 0; j < 3; j++) {
+            let xn = x + i - 1;
+            let yn = y + j - 1;
+            let pixel = this.getPixel(original, xn, yn);
+            for (let p = 0; p < 3; p++) {
+              color += pixel[p] * kernelX[i][j];
+              color += pixel[p] * kernelY[i][j];
+            }
+          }
+        }
+        let r = Math.max(color, 0);
+        let b = Math.max(-color, 0);
         this.setPixel(c, x, y, r, g, b, alpha);
       }
     }
@@ -509,53 +634,5 @@ class Img {
         [1, 2, 1],
       ],
     };
-  }
-  /**
-   *
-   * @param {*} h
-   * @param {*} s
-   * @param {*} v
-   * @returns
-   */
-  HSVtoRGB(h, s, v) {
-    let r, g, b, i, f, p, q, t;
-    i = Math.floor(h * 6);
-    f = h * 6 - i;
-    p = v * (1 - s);
-    q = v * (1 - f * s);
-    t = v * (1 - (1 - f) * s);
-    switch (i % 6) {
-      case 0:
-        r = v;
-        g = t;
-        b = p;
-        break;
-      case 1:
-        r = q;
-        g = v;
-        b = p;
-        break;
-      case 2:
-        r = p;
-        g = v;
-        b = t;
-        break;
-      case 3:
-        r = p;
-        g = q;
-        b = v;
-        break;
-      case 4:
-        r = t;
-        g = p;
-        b = v;
-        break;
-      case 5:
-        r = v;
-        g = p;
-        b = q;
-        break;
-    }
-    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
   }
 }

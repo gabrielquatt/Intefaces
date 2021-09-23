@@ -215,3 +215,17 @@ document
 document
   .getElementById("btn_rainbow2")
   .addEventListener("click", () => image.rainbow(2));
+
+/**
+ * Filtro anaglifo
+ */
+document
+  .getElementById("btn_anaglyph")
+  .addEventListener("click", () => image.anaglyph());
+
+/**
+ * Filtro tiza
+ */
+document
+  .getElementById("btn_whiteboard")
+  .addEventListener("click", () => image.whiteboard());
