@@ -123,8 +123,8 @@ class Img {
   }
 
   /**
-   * @param { * } param  se retorna el canvas sin antes dibujar la imagen
-   * @returns objeto que contiene los datos de la imagen o dibujo en canvas
+   * @param { * } param  se retorna el canvas sin antes restaurar la imagen original
+   * @returns objeto que contiene los datos del contexto del canvas
    */
   getCopy(param) {
     if (!param) {
@@ -293,7 +293,7 @@ class Img {
     }
     this.ctx.putImageData(c, this.posx, this.posy);
   }
-  
+
   /**
    *
    * @param {*} h
@@ -417,6 +417,10 @@ class Img {
   sharpening() {
     if (!this.img.src) return;
     this.applySimpleFilter(this.getHighPassKernel());
+
+    // se aplica dos veces el filtro para un efecto mas notorio
+    // el segundo parametro determina que el filtro se aplicara sobre la imagen ya modificada anteriormente
+    this.applySimpleFilter(this.getHighPassKernel(), 1);
   }
 
   /**
@@ -454,6 +458,8 @@ class Img {
 
   /**
    *  @param { Matriz[][] } kernel : matriz para aplicar filtros
+   *  @param { param } : determina que no se restaura la imagen original antes de aplicar el filtro
+   *                      de esta forma se acumulan modificaciones en la imagen
    */
   applySimpleFilter(kernel, param) {
     let original = this.getCopy(param);
@@ -536,7 +542,7 @@ class Img {
    *  Fuentes:
    *   https://observablehq.com/@mbostock/sobel-operator
    *   https://d3js.org/
-   *  https://observablehq.com/@mbostock/sinebow
+   *   https://observablehq.com/@mbostock/sinebow
    *   https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Global_Objects/Math/hypot
    *   https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Global_Objects/Math/atan2
    *   https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Global_Objects/Math/max
@@ -570,6 +576,8 @@ class Img {
         let t = Math.atan2(cy, cx) / (2 * Math.PI);
         let { r, g, b } = d3.rgb(d3.interpolateSinebow(t));
         let alpha = 255;
+
+        // solo varia el alpha entre los filtros arcoiris
         if (n == 1) {
           let color = Math.hypot(cx, cy);
           if (!isNaN(color)) {

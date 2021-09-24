@@ -73,13 +73,6 @@ input_stroke.addEventListener("change", () => {
 });
 
 /**
- * Desplegar/ocultar input para seleccionar tamaño del trazo
- */
-// document.getElementById("btn_stroke").addEventListener("click", () => {
-//   document.getElementById("dropDown").classList.toggle("hide");
-// });
-
-/**
  * ***********************************************************************
  *                          Eventos del canvas
  * ***********************************************************************
