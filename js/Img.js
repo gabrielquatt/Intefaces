@@ -47,8 +47,8 @@ class Img {
     this.resetCanvas();
     if (this.img.src) {
       this.setSize();
-      ctx.imageSmoothingEnabled = true;
-      ctx.drawImage(
+      this.ctx.imageSmoothingEnabled = true;
+      this.ctx.drawImage(
         this.img,
         this.posx,
         this.posy,
@@ -74,8 +74,11 @@ class Img {
     this.tmp_width = Math.ceil(this.img.width * this.prop);
     this.tmp_height = Math.ceil(this.img.height * this.prop);
 
-    this.posx = Math.ceil((this.WIDTH - this.tmp_width) / 2);
-    this.posy = Math.ceil((this.HEIGHT - this.tmp_height) / 2);
+    this.canvas.width = this.tmp_width;
+    this.canvas.height = this.tmp_height;
+
+    // this.posx = Math.ceil((this.WIDTH - this.tmp_width) / 2);
+    // this.posy = Math.ceil((this.HEIGHT - this.tmp_height) / 2);
   }
 
   /**
@@ -99,6 +102,8 @@ class Img {
    * Borra el contenido y restaura dimensiones originales del canvas
    */
   resetCanvas() {
+    this.canvas.width = this.WIDTH;
+    this.canvas.height = this.HEIGHT;
     this.ctx.clearRect(0, 0, this.WIDTH, this.HEIGHT);
   }
 
@@ -114,9 +119,33 @@ class Img {
    * Descargar imagen
    */
   saveImage() {
+    if (!this.img.src) return;
+
+    // canvas auxiliar (invisible para el usuario, no se añade al html)
+    let c = document.createElement("canvas");
+
+    // este canvas tiene el tamaño de la imagen
+    c.width = this.img.width;
+    c.height = this.img.height;
+
+    c.getContext("2d").drawImage( 
+      // dibuja el contenido actual del canvas en el canvas auxiliar
+      this.canvas, 
+      0,
+      0,
+      this.tmp_width,
+      this.tmp_height,
+
+      // redimension para adaptar a la imagen
+      0,
+      0,
+      this.img.width,
+      this.img.height
+    );
+
     let link = document.createElement("a");
     link.download = "canvas.png";
-    link.href = this.canvas
+    link.href = c
       .toDataURL("image/png")
       .replace("image/png", "image/octet-stream");
     link.click();
